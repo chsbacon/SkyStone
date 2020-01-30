@@ -231,7 +231,7 @@ public class Auto extends LinearOpMode {
             releaseMat();
 
             //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            rotateL(90, .3);
+            //rotateL(90, .3);
             //strafeRight();
             parkMatBlue();
 
