@@ -34,7 +34,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
-//@Disabled
+//////@Disabled
 
 //name file AutonomousB
 public class Auto extends LinearOpMode {
