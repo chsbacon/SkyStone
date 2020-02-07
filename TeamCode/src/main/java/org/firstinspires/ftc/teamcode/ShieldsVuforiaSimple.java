@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Environment;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -39,12 +41,12 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         // Initialize Vuforia
-        // depreciated this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        // depreciated -> this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        // We ask Vuforia to provide RGB565 images.
+        // Ask Vuforia to provide RGB565 images.
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        // We ask Vuforia to keep just one image
+        // Ask Vuforia to keep just one image
         vuforia.setFrameQueueCapacity(1);
 
         // Wait for the driver to hit play
@@ -54,7 +56,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image rgbImage = null;
         double yellowCount = 0;
-        boolean saveBitmaps = true;
+        boolean SAVE_BITMAPS = true;
         while (rgbImage == null) {
             try {
                 frame = vuforia.getFrameQueue().take();
@@ -75,76 +77,47 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             }
         }
         if (rgbImage != null) {
-            // copy the bitmap from the Vuforia frame
+            // Copy the bitmap from the Vuforia frame
             Bitmap bitmap = createBitmap(rgbImage.getWidth(), rgbImage.getHeight(), Bitmap.Config.RGB_565);
             bitmap.copyPixelsFromBuffer(rgbImage.getPixels());
 
-            String path = Environment.getExternalStorageDirectory().toString();
-            FileOutputStream out = null;
-
-            String bitmapName;
-            String croppedBitmapName;
-            bitmapName = "myBitmap.png";
-            croppedBitmapName = "myBitmapCropped.png";
+            // Scribble scrabble
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.rgb(0,204,255));
+            paint.setTextSize(60);
+            canvas.drawText("BACON!",bitmap.getWidth()/2, bitmap.getHeight()/2, paint);
 
             // Save the file
-            if (saveBitmaps) {
-                try {
-                    File file = new File(path, bitmapName);
-                    out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.flush();
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            if (SAVE_BITMAPS)
+                saveBitmap(bitmap, "myBitmap.png");
 
-            // just practicing cropping
-            bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth() - 10, bitmap.getHeight() - 10);
+            // default image is 1280 x 720
+            // cropped is        640 x 360
+            // scaled is          64 x  36 (2,304 pixels)
+            bitmap = createBitmap(bitmap, bitmap.getWidth()/4, bitmap.getHeight()/4, bitmap.getWidth()/2, bitmap.getHeight()/2);
+            // Save the cropped image
+            if (SAVE_BITMAPS)
+                saveBitmap(bitmap, "myBitmapCropped.png");
 
-            // save the cropped image
-            if (saveBitmaps) {
-                try {
-                    File file = new File(path, croppedBitmapName);
-                    out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.flush();
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            // Now compress for the scan
+            bitmap = createScaledBitmap(bitmap, 64, 32, true);
 
-            // now compress for the scan
-            bitmap = createScaledBitmap(bitmap, 110, 20, true);
+            // Save the scaled image
+            if(SAVE_BITMAPS)
+                saveBitmap(bitmap, "myBitmapScaled.png");
 
             int height;
             int width;
             int pixel;
             int bitmapWidth = bitmap.getWidth();
             int bitmapHeight = bitmap.getHeight();
-
+            // Count the yellow pixels (max of 2,304)
             for (height = 0; height < bitmapHeight; ++height) {
                 for (width = 0; width < bitmapWidth; ++width) {
                     pixel = bitmap.getPixel(width, height);
-                    if (Color.red(pixel) > 100 || Color.green((pixel)) > 100) {
-                        yellowCount += Color.red(pixel);
-                        yellowCount += Color.green(pixel);
+                    if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
+                        yellowCount += 1;
                     }
                 }
             }
@@ -153,6 +126,26 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
 
             while (opModeIsActive()) {
 
+            }
+        }
+    }
+    void saveBitmap(Bitmap bitmap, String fileName) {
+        String path = Environment.getExternalStorageDirectory().toString();
+        FileOutputStream out = null;
+        try {
+            File file = new File(path, fileName);
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.flush();
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
