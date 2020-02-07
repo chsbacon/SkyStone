@@ -1,4 +1,3 @@
-// Import hardware libraries and tell Android studio where our stuff it
 package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -20,52 +19,50 @@ import java.io.IOException;
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
 
-@Autonomous(name = "Simple Vuforia", group = "Opmode")
+@Autonomous(name = "Yellow Vuforia", group = "Opmode")
 // @Disabled
 
 public class ShieldsVuforiaSimple extends LinearOpMode {
     HardwareBlank robot = new HardwareBlank();
-    //VuforiaLocalizer vuforia;
 
-    //public void VuforiaStuff(VuforiaLocalizer vuforia) {
-    //    this.vuforia = vuforia;
-    //}
-    private VuforiaLocalizer vuforia = null;
+    private VuforiaLocalizer vuforia;
 
-    // this will run once the opmode is fired up
     public void runOpMode() {
-        // need to initialize the hardware class
         robot.init(hardwareMap);
         telemetry.addData("", "Greetings, Human.");
         telemetry.update();
-        // wait for the driver to hit play
-        waitForStart();
-        telemetry.addData("", "You clicked play.");
-        telemetry.update();
-        Image rgbImage = null;
-        double rCount = 0;
+
+        // Create parameters object to initialize Vuforia with
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AUOQWxb/////AAABmRP6L/V1T0Bclh/MquexUq8kKPD3h3N5sSIPraEvHInc1KyTB1KSLqkDd0mdJZibl8t7LsWmHogI6fR7p44UvkxD6uBvANg8xebRLgWIHaPvqxf3IqT8IG2VkljyPD/Unlfi357W5qXls0rtkFem3yX5kROTZEfRbmf5ZwtC3KSu6hBzriQwM7zk0zptP/MWtO6B/SZz6OWwLCR6O4I6TkKC7kQS3b1VGNonWq4fFL5jMcVPypqZKohDySdG4URcz0NqxpeEcC9P/c/VL67JKBcFaNBtix+7N/yccggWv8tUKuofNLIS1mUEv5kTzw9n4ps6ApmE2PziqmOjzpNL0MgF+V3KhRddiJjx51nFKEdX";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        //vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-        //VuforiaLocalizer vuforia;
+
+        // Initialize Vuforia
+        // depreciated this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // We ask Vuforia to provide RGB565 images.
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        // We ask Vuforia to keep just one image
         vuforia.setFrameQueueCapacity(1);
 
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        VuforiaLocalizer.CloseableFrame closeableFrame = null;
-        //this.vuforia = vuforia;
-        vuforia.setFrameQueueCapacity(1);
+        // Wait for the driver to hit play
+        waitForStart();
+
+        // Pull raw images
+        VuforiaLocalizer.CloseableFrame frame = null;
+        Image rgbImage = null;
+        double yellowCount = 0;
         boolean saveBitmaps = true;
         while (rgbImage == null) {
             try {
-                closeableFrame = vuforia.getFrameQueue().take();
-                long numImages = closeableFrame.getNumImages();
+                frame = vuforia.getFrameQueue().take();
+                long numImages = frame.getNumImages();
 
                 for (int i = 0; i < numImages; i++) {
-                    if (closeableFrame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
-                        rgbImage = closeableFrame.getImage(i);
+                    if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+                        rgbImage = frame.getImage(i);
                         if (rgbImage != null) {
                             break;
                         }
@@ -74,7 +71,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             } catch (InterruptedException exc) {
 
             } finally {
-                if (closeableFrame != null) closeableFrame.close();
+                if (frame != null) frame.close();
             }
         }
         if (rgbImage != null) {
@@ -90,6 +87,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             bitmapName = "myBitmap.png";
             croppedBitmapName = "myBitmapCropped.png";
 
+            // Save the file
             if (saveBitmaps) {
                 try {
                     File file = new File(path, bitmapName);
@@ -109,8 +107,10 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                 }
             }
 
-            bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth() - 10, bitmap.getHeight() - 10); //Cropped Bitmap to show only stones
+            // just practicing cropping
+            bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth() - 10, bitmap.getHeight() - 10);
 
+            // save the cropped image
             if (saveBitmaps) {
                 try {
                     File file = new File(path, croppedBitmapName);
@@ -129,7 +129,9 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     }
                 }
             }
-            bitmap = createScaledBitmap(bitmap, 110, 20, true); //Compress bitmap to reduce scan time
+
+            // now compress for the scan
+            bitmap = createScaledBitmap(bitmap, 110, 20, true);
 
             int height;
             int width;
@@ -140,12 +142,13 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             for (height = 0; height < bitmapHeight; ++height) {
                 for (width = 0; width < bitmapWidth; ++width) {
                     pixel = bitmap.getPixel(width, height);
-                    if (Color.red(pixel) > 200) {
-                        rCount += Color.red(pixel);
+                    if (Color.red(pixel) > 100 || Color.green((pixel)) > 100) {
+                        yellowCount += Color.red(pixel);
+                        yellowCount += Color.green(pixel);
                     }
                 }
             }
-            telemetry.addData("red count", rCount);
+            telemetry.addData("How yellow? ", yellowCount);
             telemetry.update();
 
             while (opModeIsActive()) {
@@ -154,6 +157,3 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
         }
     }
 }
-
-// TO DO: read this code:
-// http://www.java2s.com/example/java-src/pkg/org/firstinspires/ftc/robotcontroller/loomis/opmodes/democolorvision-6aed2.html?scrlybrkr=62b061e0
