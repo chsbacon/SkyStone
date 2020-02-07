@@ -51,12 +51,14 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
 
         // Wait for the driver to hit play
         waitForStart();
-
+        while (opModeIsActive()) {
         // Pull raw images
         VuforiaLocalizer.CloseableFrame frame = null;
         Image rgbImage = null;
         double yellowCount = 0;
-        boolean SAVE_BITMAPS = true;
+        boolean SAVE_BITMAPS = false;
+        int YELLOW_THRESHOLD = 1000;
+
         while (rgbImage == null) {
             try {
                 frame = vuforia.getFrameQueue().take();
@@ -84,9 +86,9 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             // Scribble scrabble
             Canvas canvas = new Canvas(bitmap);
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.rgb(0,204,255));
+            paint.setColor(Color.rgb(0, 204, 255));
             paint.setTextSize(60);
-            canvas.drawText("BACON!",bitmap.getWidth()/2, bitmap.getHeight()/2, paint);
+            canvas.drawText("BACON!", bitmap.getWidth() / 2, bitmap.getHeight() / 2, paint);
 
             // Save the file
             if (SAVE_BITMAPS)
@@ -95,7 +97,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             // default image is 1280 x 720
             // cropped is        640 x 360
             // scaled is          64 x  36 (2,304 pixels)
-            bitmap = createBitmap(bitmap, bitmap.getWidth()/4, bitmap.getHeight()/4, bitmap.getWidth()/2, bitmap.getHeight()/2);
+            bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, bitmap.getHeight() / 4, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
@@ -104,7 +106,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             bitmap = createScaledBitmap(bitmap, 64, 32, true);
 
             // Save the scaled image
-            if(SAVE_BITMAPS)
+            if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapScaled.png");
 
             int height;
@@ -121,12 +123,17 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     }
                 }
             }
-            telemetry.addData("How yellow? ", yellowCount);
+            if(yellowCount > YELLOW_THRESHOLD)
+                telemetry.addData("How yellow? ", "YELLOW");
+            else
+                telemetry.addData("How yellow? ", "BLACK");
+            //telemetry.addData("How yellow? ", yellowCount);
             telemetry.update();
 
-            while (opModeIsActive()) {
+            //while (opModeIsActive()) {
 
-            }
+            //}
+        }
         }
     }
     void saveBitmap(Bitmap bitmap, String fileName) {
