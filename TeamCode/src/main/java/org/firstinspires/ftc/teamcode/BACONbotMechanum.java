@@ -300,11 +300,17 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.clawServo.setPosition(1);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
+                    robot.wheelServoL.setPosition(1.0);
+                    // robot.wheelServoR.setDirection(DcMotorSimple.Direction.REVERSE);
+                    robot.wheelServoR.setPosition(0.0);
                 }
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
+                    robot.wheelServoL.setPosition(0.48);
+                    robot.wheelServoR.setPosition(0.49);
+
                 }
             }
 
@@ -332,7 +338,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-
+            /*
             if (gamepad2.dpad_down && (dpad2 == OFF)) {
                 if (wheelServoState == OFF) {
                     robot.wheelServoL.setPosition(1.0);
@@ -351,7 +357,7 @@ public class BACONbotMechanum extends LinearOpMode {
             if (!gamepad2.dpad_down) {
                 dpad2 = OFF;
             }
-
+            */
             /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());

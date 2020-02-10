@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
+import android.widget.ImageView;
 
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
@@ -45,6 +46,7 @@ public class VuforiaStuff {
         double blackCountC = 1;
         double blackCountR = 1;
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
         VuforiaLocalizer.CloseableFrame closeableFrame = null;
         this.vuforia.setFrameQueueCapacity(1);
         while (rgbImage == null) {
@@ -242,5 +244,26 @@ public class VuforiaStuff {
 
 
         return pos;
+    }
+
+    void saveBitmap(Bitmap bitmap, String fileName) {
+        String path = Environment.getExternalStorageDirectory().toString();
+        FileOutputStream out = null;
+        try {
+            File file = new File(path, fileName);
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.flush();
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

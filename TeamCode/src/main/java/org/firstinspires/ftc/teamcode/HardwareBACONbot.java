@@ -54,6 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 public class HardwareBACONbot
+
 {
     /* Public OpMode members. */
     public DcMotor  frontLeftMotor   = null;

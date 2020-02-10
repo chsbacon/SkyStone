@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
+import android.widget.ImageView;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -80,8 +81,6 @@ public class CaptureBitmap extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
     VuforiaStuff vuforiaStuff;
     VuforiaStuff.skystonePos pos;
     private VuforiaLocalizer vuforia;
@@ -108,7 +107,7 @@ public class CaptureBitmap extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            pos = vuforiaStuff.vuforiascan(false,false);
+            pos = vuforiaStuff.vuforiascan(true,false);
            // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Pos", pos);

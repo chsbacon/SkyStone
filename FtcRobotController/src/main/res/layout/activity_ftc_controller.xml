@@ -49,12 +49,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     android:background="@color/background_black">
 
     <ImageView
-      android:id="@+id/robotIcon"
-      android:src="@drawable/icon_robotcontroller"
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:adjustViewBounds="true"
-      android:layout_margin="1dp"/>
+        android:id="@+id/robotIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/icon_robotcontroller_rainbow" />
 
     <TextView
       android:id="@+id/textDeviceName"
@@ -97,6 +100,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     android:paddingTop="@dimen/activity_vertical_margin" >
 
     <TextView
+        android:id="@+id/textShields"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="45"
+        android:text="@string/shieldsText"
+        android:textSize="36sp"
+        android:transformPivotX="50dp"
+        android:transformPivotY="150dp"
+        android:translationX="40dp"
+        android:translationY="30dp" />
+
+    <TextView
       android:id="@+id/textNetworkConnectionStatus"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -133,21 +148,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         <LinearLayout
             android:id="@+id/cameraMonitorViewId"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            />
+            android:visibility="gone">
+
+        </LinearLayout>
+
         <FrameLayout
             android:id="@+id/tfodMonitorViewId"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            />
+            android:visibility="gone"/>
 
-        </LinearLayout>
+      </LinearLayout>
 
       <!-- When visible, the error message will overlay and thus partially
            obscure part of the camera monitor. We make this trade off so as to
