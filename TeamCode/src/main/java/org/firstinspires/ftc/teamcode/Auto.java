@@ -136,6 +136,10 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Mat Position ", matPosition);
         telemetry.update();
 
+
+        waitForStart();
+        runtime.reset();
+
         //First troubleshooting steps for this section would be to check the direction of the strafes in scan and grab
         if ((task == stones) && (teamcolor == red)) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
