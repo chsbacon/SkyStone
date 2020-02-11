@@ -136,6 +136,11 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Mat Position ", matPosition);
         telemetry.update();
 
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
+
+        //mat servos up
+        //robot.matServoL.setPosition(freePos);
+        //robot.matServoR.setPosition(grabPos);
 
         waitForStart();
         runtime.reset();
