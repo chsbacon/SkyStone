@@ -18,8 +18,8 @@
             <NeveRest40Gearmotor name="LM" port="0" />
             <Servo name="matL" port="0" />
             <Servo name="matR" port="1" />
-            <ContinuousRotationServo name="wheelL" port="2" />
-            <ContinuousRotationServo name="wheelR" port="3" />
+            <Servo name="wheelL" port="2" />
+            <Servo name="wheelR" port="3" />
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
             <REV_VL53L0X_RANGE_SENSOR name="bsr" port="0" bus="1" />
             <REV_VL53L0X_RANGE_SENSOR name="fsr" port="0" bus="2" />
