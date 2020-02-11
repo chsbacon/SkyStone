@@ -202,11 +202,10 @@ public class Auto extends LinearOpMode {
             stopDriving();
 
             releaseMat();
+            rotateL(-10.0, 0.3);
 
             //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-           parkMatBlue();
-
+            parkMatBlue();
             driveBackwardsSlow();
             sleep(500);
             stopDriving();
@@ -229,11 +228,14 @@ public class Auto extends LinearOpMode {
             matRotateR();
             stopDriving();
             releaseMat();
+            //Re-orient!!!!
+
 
             //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             //rotateL(90, .3);
             //strafeRight();
             parkMatBlue();
+
 
             driveBackwardsSlow();
             sleep(500);
@@ -256,16 +258,16 @@ public class Auto extends LinearOpMode {
                 telemetry.update();
             }
             stopDriving();
-
+            matRotateL();
+            stopDriving();
             releaseMat();
-
             rotateR(-10.0, 0.3);
+            //Re-orient!!!
+
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
             //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-
             parkMatRed();
 
             driveBackwardsSlow();
@@ -845,18 +847,17 @@ public class Auto extends LinearOpMode {
     void positionRobotMatBlue(){
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
-
+        raiseClaw();
+        driveForwardSlow();
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
         {
-            driveForwardSlow();
         }
         stopDriving();
         lastTime = runtime.milliseconds();
-        //this actually makes it go left toward the center of the mat
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         while (runtime.milliseconds() < lastTime + 1000) {
-            strafeRight(mat, .3, targOrient);
+            strafeLeft(mat, .3, targOrient);
         }
         stopDriving();
         driveForwardSlow();
@@ -867,6 +868,7 @@ public class Auto extends LinearOpMode {
     void positionRobotMatRed(){
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
+        raiseClaw();
         driveForwardSlow();
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
         {
@@ -878,7 +880,7 @@ public class Auto extends LinearOpMode {
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         while (runtime.milliseconds() < lastTime + 1000) {
-            strafeLeft(mat, .3, targOrient);
+            strafeRight(mat, .3, targOrient);
         }
         stopDriving();
         driveForwardSlow();
@@ -905,18 +907,34 @@ public class Auto extends LinearOpMode {
     }
 
     void parkMatBlue(){
+        double lastTime = runtime.milliseconds();
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeRight(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
         while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-            strafeLeft(mat,.3, targOrient);
+            strafeRight(mat,.3, targOrient);
         }
         stopDriving();
     }
     void parkMatRed(){
+        double lastTime = runtime.milliseconds();
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeLeft(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
         while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
-            strafeRight(mat,.3, targOrient);
+            strafeLeft(mat,.3, targOrient);
             telemetry.addData("Red  ", robot.colorSensorDown.red());
             telemetry.update();
         }
