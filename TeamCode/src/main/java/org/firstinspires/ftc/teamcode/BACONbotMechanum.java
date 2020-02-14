@@ -115,7 +115,7 @@ public class BACONbotMechanum extends LinearOpMode {
         float freePos = 1;  //change these later  (written 12-3-19)
 
         float currentPos = 0;
-
+        double clawServoState;
         double x;
         double y;
         double r;
@@ -300,11 +300,15 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.clawServo.setPosition(1);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
+                    robot.wheelServoL.setPosition(0.0);
+                    robot.wheelServoR.setPosition(0.0);
                 }
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
+                    robot.wheelServoL.setPosition(.49);
+                    robot.wheelServoR.setPosition(.47);
                 }
             }
 
@@ -351,6 +355,7 @@ public class BACONbotMechanum extends LinearOpMode {
             if (!gamepad2.dpad_down) {
                 dpad2 = OFF;
             }
+
 
             /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
