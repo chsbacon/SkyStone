@@ -300,15 +300,15 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.clawServo.setPosition(1);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
-                    robot.wheelServoL.setPosition(0.0);
-                    robot.wheelServoR.setPosition(0.0);
+                    robot.wheelServoL.setPosition(.75);
+                    robot.wheelServoR.setPosition(.25);
                 }
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
-                    robot.wheelServoL.setPosition(.49);
-                    robot.wheelServoR.setPosition(.47);
+                    robot.wheelServoL.setPosition(.5);
+                    robot.wheelServoR.setPosition(.5);
                 }
             }
 
