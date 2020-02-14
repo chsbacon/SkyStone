@@ -357,13 +357,13 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
 
-            /*
+
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
-            telemetry.addData("Blue  ", robot.colorSensorDown.blue());
+            //telemetry.addData("Blue  ", robot.colorSensorDown.blue());
             telemetry.update();
-            */
 
+            /*
             telemetry.addData("FrontLeft:", frontLeft);
             telemetry.addData("FrontRight", frontRight);
             telemetry.addData("BackLeft", backLeft);

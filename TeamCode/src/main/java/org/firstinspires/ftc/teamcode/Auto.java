@@ -619,7 +619,7 @@ public class Auto extends LinearOpMode {
                 strafeLeft(stones,STRAFE_SPEED, targOrient);
             }
 
-            int skyStoneThresholdRed = 90;
+            int skyStoneThresholdRed = 60; //Was 90, changed to 60 on 2/14 at AHS
             if(runtime.milliseconds() > 12000){
                 skyStoneThresholdRed = 200;
             }
