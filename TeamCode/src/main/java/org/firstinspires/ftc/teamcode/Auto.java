@@ -213,7 +213,7 @@ public class Auto extends LinearOpMode {
             //gotored
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -229,7 +229,18 @@ public class Auto extends LinearOpMode {
             //Actually left towards the skybridge
             //Senses the red tape under the skybridge and tells the robot to stop
 
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+
+            lastTime = runtime.milliseconds();
+            //this actually makes it go left toward the center of the mat
+            while (runtime.milliseconds() < lastTime + 4000) {
+                strafeLeft(mat, .3, targOrient);
+            }
+
+            stopDriving();
+            lowerClaw();
+            sleep(500);
+
 
             while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
                 strafeLeft(mat,.3, targOrient);
@@ -275,7 +286,7 @@ public class Auto extends LinearOpMode {
 
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -291,14 +302,17 @@ public class Auto extends LinearOpMode {
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            sleep(500);
-            strafeRight(mat,.3, targOrient);
-            sleep(4000);
+
+            lastTime = runtime.milliseconds();
+            //this actually makes it go left toward the center of the mat
+            while (runtime.milliseconds() < lastTime + 4000) {
+                strafeRight(mat, .3, targOrient);
+            }
+
+            stopDriving();
             lowerClaw();
             sleep(500);
-
 
             while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
                 strafeRight(mat,.3, targOrient);
