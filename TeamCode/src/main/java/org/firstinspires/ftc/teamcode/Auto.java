@@ -47,7 +47,7 @@ public class Auto extends LinearOpMode {
     int red = 0;
     int mat = 1;
     int stones = 2;
-    int FRONTDIST = 160;
+    int FRONTDIST = 120; //used to be 160
 
     // ==============================
     public void runOpMode() {
@@ -181,8 +181,8 @@ public class Auto extends LinearOpMode {
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //BLUE TEAM MAT
         if ((task == mat) && (teamcolor == blue)) {
-            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            robot.blinkinLedDriver.setPattern(robot.pattern);
+            //robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            //robot.blinkinLedDriver.setPattern(robot.pattern);
 
             closeClaw();
             raiseClaw();
@@ -195,12 +195,12 @@ public class Auto extends LinearOpMode {
             lastTime = runtime.milliseconds();
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            while (runtime.milliseconds() < lastTime + 1500) { //1000 to 1500
+            while (runtime.milliseconds() < lastTime + 1250) { //1000 to 1500
                 strafeRight(mat, .3, targOrient);
             }
             stopDriving();
             driveForwardSlow();
-            sleep(250);
+            sleep(500); //used to be 250
             stopDriving();
 
             //servos down
@@ -208,8 +208,9 @@ public class Auto extends LinearOpMode {
             robot.matServoR.setPosition(freePos);
             sleep(1000); //We can edit this delay based on it we need more time or not
             driveBackwardsSlow();
+            lastTime = runtime.milliseconds();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75/*used to be75*/) && opModeIsActive() && (runtime.milliseconds()-lastTime) < 5000) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -259,7 +260,7 @@ public class Auto extends LinearOpMode {
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (runtime.milliseconds() < lastTime + 1000) {
+            while (runtime.milliseconds() < lastTime + 1250) {
                 strafeLeft(mat, .3, targOrient);
             }
             stopDriving();
@@ -460,7 +461,7 @@ public class Auto extends LinearOpMode {
         stopDriving();
         raiseClaw();
         driveForwardSlow();
-        sleep(2000);
+        sleep(1500); //used to be 2000
         stopDriving();
         openClaw(); //Claw servo in the open position
         sleep(300);
@@ -484,7 +485,7 @@ public class Auto extends LinearOpMode {
         stopDriving();
         raiseClaw();
         driveForwardSlow();
-        sleep(2000);
+        sleep(1500); //used to be 2000
         stopDriving();
         openClaw(); //Claw servo in the open position
         sleep(300);
