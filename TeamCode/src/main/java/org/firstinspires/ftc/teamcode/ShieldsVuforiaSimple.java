@@ -91,7 +91,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             // Cropped is        640 x 720
             // Scaled is          64 x  72 (400 pixels)
 
-            bitmap = createBitmap(bitmap, bitmap.getWidth() / 3, 0, bitmap.getWidth() / 3 * 2, bitmap.getHeight());
+            bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, 0, bitmap.getWidth() / 2, bitmap.getHeight());
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
@@ -105,19 +105,43 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
 
             int height;
             int width;
+            int xStart = 0;
             int pixel;
+            int pix1;
+            int pix2;
+            int pix3;
             int bitmapWidth = bitmap.getWidth();
             int bitmapHeight = bitmap.getHeight();
+            int yellowCount;
+            boolean foundX = false;
 
-            for (width = 0; width < bitmapWidth; width+=3) {
-                    pixel = bitmap.getPixel(width, 10);
+            for (width = 0; width < bitmapWidth-3; width += 3) {
+                pix1 = bitmap.getPixel(width, 10);
+                pix2 = bitmap.getPixel(width + 1, 10);
+                pix3 = bitmap.getPixel(width + 2, 10);
+                yellowCount = 0;
+                if (Color.red(pix1) > 100 && Color.green(pix1) > 100 && Color.blue(pix1) < 100)
+                    yellowCount += 1;
+                if (Color.red(pix2) > 100 && Color.green(pix2) > 100 && Color.blue(pix2) < 100)
+                    yellowCount += 1;
+                if (Color.red(pix3) > 100 && Color.green(pix3) > 100 && Color.blue(pix3) < 100)
+                    yellowCount += 1;
+                if (yellowCount == 3 && !foundX) {
+                    foundX = true;
+                    xStart = width;
+                }
+            }
+
+            for (height = 0; height < bitmapHeight/3; ++height) {
+                for (width = xStart; width < xStart+10; ++width) {
+                    pixel = bitmap.getPixel(width, height);
                     if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
                         yellowR += 1;
                     }
+                }
             }
-
             for (height = bitmapHeight/3; height < bitmapHeight/3*2; ++height) {
-                for (width = 0; width < bitmapWidth; ++width) {
+                for (width = xStart; width < xStart+10; ++width) {
                     pixel = bitmap.getPixel(width, height);
                     if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
                         yellowC += 1;
@@ -125,7 +149,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                 }
             }
             for (height = bitmapHeight/3*2; height < bitmapHeight; ++height) {
-                for (width = 0; width < bitmapWidth; ++width) {
+                for (width = xStart; width < xStart+10; ++width) {
                     pixel = bitmap.getPixel(width, height);
                     if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
                         yellowL += 1;
