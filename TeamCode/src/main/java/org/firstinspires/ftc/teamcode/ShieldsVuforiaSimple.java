@@ -88,20 +88,16 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                 saveBitmap(bitmap, "myBitmap.png");
 
             // Default image is 1280 x 720
-            // Cropped is         20 x 400
-            // Scaled is          10 x  40 (400 pixels)
-            int x = 706;
-            int y1 = 160;
-            int y2 = 360;
-            int y3 = 540;
-            bitmap = createBitmap(bitmap, x-10, y1-10, 20, y3-y1+20);
-            // bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, bitmap.getHeight() / 4, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+            // Cropped is        640 x 720
+            // Scaled is          64 x  72 (400 pixels)
+
+            bitmap = createBitmap(bitmap, bitmap.getWidth() / 3, 0, bitmap.getWidth() / 3 * 2, bitmap.getHeight());
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
 
             // Now compress for the scan
-            bitmap = createScaledBitmap(bitmap, 10, 40, true);
+            bitmap = createScaledBitmap(bitmap, 64, 72, true);
 
             // Save the scaled image
             if (SAVE_BITMAPS)
@@ -113,14 +109,13 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             int bitmapWidth = bitmap.getWidth();
             int bitmapHeight = bitmap.getHeight();
 
-            for (height = 0; height < bitmapHeight/3; ++height) {
-                for (width = 0; width < bitmapWidth; ++width) {
-                    pixel = bitmap.getPixel(width, height);
+            for (width = 0; width < bitmapWidth; width+=3) {
+                    pixel = bitmap.getPixel(width, 10);
                     if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
                         yellowR += 1;
                     }
-                }
             }
+
             for (height = bitmapHeight/3; height < bitmapHeight/3*2; ++height) {
                 for (width = 0; width < bitmapWidth; ++width) {
                     pixel = bitmap.getPixel(width, height);
