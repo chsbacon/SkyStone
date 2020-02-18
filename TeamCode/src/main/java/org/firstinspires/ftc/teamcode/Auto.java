@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -17,6 +18,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -27,7 +29,6 @@ import org.firstinspires.ftc.teamcode.HardwareBACONbot;
 
 import java.util.Locale;
 //import org.firstinspires.ftc.teamcode.Teleops.HardwareMap;
-
 
 @Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
 //@Disabled
@@ -140,13 +141,13 @@ public class Auto extends LinearOpMode {
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
-            scan(red); //2 means red
+            scan(red);
             //Setting it up to go up and grab the Skystone
             grabPrep();
             //Pick up the Skystone
             grabStone();
             //rotate to face mat side
-            rotateR(-80.0, 0.3); //heading was at 85
+            rotateR(-80.0, 0.3);
             //Park on the tape
             parkStonesRed();
             //go drop the stone in the build zone and return to the parking line
@@ -162,13 +163,13 @@ public class Auto extends LinearOpMode {
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
-            scan(blue); //1 means blue
+            scan(blue);
             //Setting it up to go up and grab the Skystone
             grabPrep();
             //Pick up the Skystone
             grabStone();
             //rotate to face mat side
-            rotateL(80.0, 0.3); //heading was at 85
+            rotateL(80.0, 0.3);
             //Park on the tape
             parkStonesBlue();
             //go drop the stone in the build zone and return to the parking line
@@ -192,7 +193,6 @@ public class Auto extends LinearOpMode {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-            //this actually makes it go left toward the center of the mat
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             while (runtime.milliseconds() < lastTime + 1000) {
@@ -207,10 +207,6 @@ public class Auto extends LinearOpMode {
             robot.matServoL.setPosition(grabPos);
             robot.matServoR.setPosition(freePos);
             sleep(1000); //We can edit this delay based on it we need more time or not
-            //grabmat
-            //drivebacktowall
-            //releasemat
-            //gotored
             driveBackwardsSlow();
 
             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && opModeIsActive()) //drivetomat
@@ -226,11 +222,6 @@ public class Auto extends LinearOpMode {
             robot.matServoR.setPosition(grabPos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
-            //Actually left towards the skybridge
-            //Senses the red tape under the skybridge and tells the robot to stop
-
-
-
             lastTime = runtime.milliseconds();
             //this actually makes it go left toward the center of the mat
             while (runtime.milliseconds() < lastTime + 4000) {
@@ -240,7 +231,6 @@ public class Auto extends LinearOpMode {
             stopDriving();
             lowerClaw();
             sleep(500);
-
 
             while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
                 strafeLeft(mat,.3, targOrient);
@@ -260,14 +250,12 @@ public class Auto extends LinearOpMode {
             closeClaw();
             raiseClaw();
 
-
             driveForwardSlow();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-            //this actually makes it go right toward the center of the mat
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -297,12 +285,6 @@ public class Auto extends LinearOpMode {
             robot.matServoL.setPosition(freePos);
             robot.matServoR.setPosition(grabPos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
-
-            //rotateR(-10.0, 0.3);
-
-            //Actually left towards the skybridge
-            //Senses the BLUE tape under the skybridge and tells the robot to stop
-
 
             lastTime = runtime.milliseconds();
             //this actually makes it go left toward the center of the mat
@@ -325,32 +307,16 @@ public class Auto extends LinearOpMode {
             sleep(500);
             stopDriving();
         }
-
-
-        //TODO What does this part do? It isn't in the same spot as the other things with sensing skystones
-        while (opModeIsActive()) {
-            //telemetry.addData("Alpha", robot.colorSensorL.alpha());
-            //telemetry.addData("Red  ", robot.colorSensorDown.red());
-            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40))
-                telemetry.addData("Skystone", 1);
-            else
-                telemetry.addData("Yellow", 0);
-            telemetry.update();
-        }
     }
     // Functions ----------------------------------------------------------------------------------------------------------------
-
-
     //Driving Functions
 
     //Stop Driving - Kill power to all the motors
     void stopDriving() {
-
         robot.frontLeftMotor.setPower(0);
         robot.frontRightMotor.setPower(0);
         robot.backLeftMotor.setPower(0);
         robot.backRightMotor.setPower(0);
-
     }
 
     //Drive Backwards - Used for starting the game
@@ -368,7 +334,6 @@ public class Auto extends LinearOpMode {
         robot.backLeftMotor.setPower(-0.3);
         robot.backRightMotor.setPower(0.3);
     }
-
 
     //Drive Forwards - Towards where the Backsensor is facing
     void driveForward() {
@@ -423,26 +388,8 @@ public class Auto extends LinearOpMode {
         //then scale it by a third of the power to make sure it
         //doesn't dominate the movement
         double r = -error / 180 * (pwr * 10);
-
-        /*
-        //if the absolute value of r is less than
-        //.07, the motors won't do anything, so if
-        //it is less than .07, make it .07
-        if ((r < .07) && (r > 0)) {
-            r = .07;
-        } else if ((r > -.07) && (r < 0)) {
-            r = -.07;
-        }
-        */
-
-/*
-        telemetry.addData("pwr:>", pwr);
-        telemetry.addData("error:>", r);
-        telemetry.addData("r:>", r);
-        telemetry.update();
-*/
         double d; // Front distance correction
-        d = -(FRONTDIST - 45 - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        d = 0;  //-(FRONTDIST - 45 - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
         if (side == mat) {
             d = 0;
         }
@@ -458,13 +405,11 @@ public class Auto extends LinearOpMode {
             backLeft = backLeft / max;
             backRight = backRight / max;
         }
-
         //send the power to the motors
         robot.frontLeftMotor.setPower(frontLeft);
         robot.backLeftMotor.setPower(backLeft); //Changing the order in which the wheels start
         robot.backRightMotor.setPower(backRight);
         robot.frontRightMotor.setPower(frontRight);
-
     }
 
     void strafeRight(int side, double pwr, Orientation target) {  //added int pwr to reduce initial power
@@ -485,23 +430,6 @@ public class Auto extends LinearOpMode {
         //then scale it by a third of the power to make sure it
         //doesn't dominate the movement
         double r = -error / 180 * (pwr * 10);
-
-        //if the absolute value of r is less than
-        //.07, the motors won't do anything, so if
-        //it is less than .07, make it .07
-        /*
-        if ((r < .07) && (r > 0)) {
-            r = .07;
-        } else if ((r > -.07) && (r < 0)) {
-            r = -.07;
-        }
-        */
-/*
-        telemetry.addData("pwr:>", pwr);
-        telemetry.addData("error:>", r);
-        telemetry.addData("r:>", r);
-        telemetry.update();
-*/
         double d; // Front distance correction
         d = -(FRONTDIST - 45 - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
         if (side == mat) {
@@ -519,7 +447,6 @@ public class Auto extends LinearOpMode {
             backLeft = backLeft / max;
             backRight = backRight / max;
         }
-
         //send the power to the motors
         robot.frontLeftMotor.setPower(frontLeft);
         robot.backLeftMotor.setPower(backLeft); //Changing the order in which the wheels start
@@ -527,25 +454,14 @@ public class Auto extends LinearOpMode {
         robot.frontRightMotor.setPower(frontRight);
     }
 
-
     void outAndBackRed() {
         driveForwardSlow(); //Out from the parking tape under the skybridge
         sleep(1000);
         stopDriving();
         raiseClaw();
-
         driveForwardSlow();
         sleep(2000);
-
-       /*
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 150) && opModeIsActive()){
-            driveForwardSlow();
-        }
-        */
-
         stopDriving();
-
-
         openClaw(); //Claw servo in the open position
         sleep(300);
         stopDriving();
@@ -555,18 +471,11 @@ public class Auto extends LinearOpMode {
         lowerClaw();
         sleep(250);
         driveBackwardsSlow();
-       /* sleep(500);
-        stopDriving();
-        lowerClaw();
-        sleep(1000);
-        driveBackwardsSlow();*/
 
         //Stop at the red tape
         while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
-
         }
         stopDriving();
-
     }
 
     void outAndBackBlue() {
@@ -575,14 +484,7 @@ public class Auto extends LinearOpMode {
         stopDriving();
         raiseClaw();
         driveForwardSlow();
-
         sleep(2000);
-        /*
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 150) && opModeIsActive()){
-            driveForwardSlow();
-        }
-        */
-
         stopDriving();
         openClaw(); //Claw servo in the open position
         sleep(300);
@@ -595,29 +497,26 @@ public class Auto extends LinearOpMode {
         driveBackwardsSlow();
         //Stop at the blue tape
         while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-
         }
         stopDriving();
-
     }
 
     void scan(int color) {
-        telemetry.addData("Start", "scan");
-        stopDriving();
-        sleep(500);
-        telemetry.update();
         int lalpha;
         int ralpha;
         boolean bothYellow = true;
-        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+        stopDriving();
+        sleep(500);
+        telemetry.addData("Start", "scan");
+        telemetry.update();
 
         robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
         robot.blinkinLedDriver.setPattern(robot.pattern);
 
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        telemetry.addData("heading", "heading: " + targOrient);
+        telemetry.addData("heading", targOrient);
         telemetry.update();
         ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
         //STRAFE RIGHT IN THE AUTONOMOUS CODE IS STRAFE LEFT IN REAL LIFE
@@ -625,19 +524,18 @@ public class Auto extends LinearOpMode {
         //-Love, Graham
         //sleep(100);
         //We may need to change the alpha values to get consistent readings
+        bothYellow = true;
         while ((bothYellow == true) && opModeIsActive()) {
-
             if (color == red) {
                 strafeRight(stones,STRAFE_SPEED, targOrient);
             } else if (color == blue) {
                 strafeLeft(stones,STRAFE_SPEED, targOrient);
             }
-
-            int skyStoneThresholdRed = 60; //Was 90, changed to 60 on 2/14 at AHS
+            int skyStoneThresholdRed = 75; //Was 90, changed to 60 on 2/14 at AHS, changed to 150 on 2/17, changed to 75 on 2/18
             if(runtime.milliseconds() > 12000){
                 skyStoneThresholdRed = 200;
             }
-            int skyStoneThresholdBlue = skyStoneThresholdRed;
+            int skyStoneThresholdBlue = 140;
             int skyStoneThreshold;
             if(color == red){
                 skyStoneThreshold = skyStoneThresholdRed;
@@ -663,44 +561,24 @@ public class Auto extends LinearOpMode {
                 bothYellow = true;
                 //left is yellow or air and right is black
             }
-            /* begin correct heading part 1
-            Orientation heading;
-            heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            double cHeading;
-            cHeading = heading.angleUnit.DEGREES.normalize(heading.firstAngle);
-            end correct heading part 1  */
             // If it's black then bothYellow is false
             if ((lalpha < skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
-                sleep(100); //keep strafing
-                /*  part 2 -- tried to correct heading
-                if (cHeading > 0.0) {//line up
-                    rotateR(0.0, .3);
-                } else if (cHeading < 0.0) {
-                    rotateL(0.0, .3);
-                }
-                end part 2 tried to correct heading */
+                sleep(100);
                 bothYellow = false;
             }
-            /*
+
             telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
             telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
             //telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
             telemetry.update();
-            */
+            telemetry.log();
+            Log.i("BACON:", "SAYWHAT?");
         }
-
-
-        //  telemetry.addData("SICK", "I SEE A SKYSTONE");
+        telemetry.addData("SICK", "I SEE A SKYSTONE");
         telemetry.update();
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;  //used to be green but want white for blue tape
-                robot.blinkinLedDriver.setPattern(robot.pattern);
-            }
-        });
-
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
     }
-
 
     void raiseClaw() {
         robot.liftMotor.setPower(-1);
@@ -710,14 +588,6 @@ public class Auto extends LinearOpMode {
         }
         robot.liftMotor.setPower(0.0);
     }
-
-   /*
-    void raiseClawOneFourthSecond() {
-        robot.liftMotor.setPower(-1);
-        sleep(250);
-        robot.liftMotor.setPower(0);
-    }
-    */
 
     void lowerClaw() {
         robot.liftMotor.setPower(1);
@@ -735,7 +605,6 @@ public class Auto extends LinearOpMode {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
-
     }
 
     void grabPrep() {
@@ -746,7 +615,6 @@ public class Auto extends LinearOpMode {
             sleep(10);
         }
         stopDriving();
-
         lowerClaw();
         sleep(500);
     }
@@ -754,11 +622,6 @@ public class Auto extends LinearOpMode {
     void grabStone() {
         stopDriving();
         driveForwardSlow();
-        /*
-        while ((robot.backDistance.getDistance(DistanceUnit.MM) < 700) && opModeIsActive()) {
-            sleep(10);
-        }
-        */
         sleep(1500);
         telemetry.addData("I stop", "I have entered the Grab Phase");
         telemetry.update();
@@ -766,16 +629,9 @@ public class Auto extends LinearOpMode {
         sleep(500);
         closeClaw();
         sleep(500);
-
         driveBackwardsSlow();
-        /*
-        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 700) && opModeIsActive()) {
-            sleep(10);
-        }
-        */
         sleep(1500);
         stopDriving();
-
     }
 
     void openClaw() {
@@ -785,7 +641,6 @@ public class Auto extends LinearOpMode {
     void closeClaw() {
         robot.clawServo.setPosition(0);
     }
-
 
     void parkStonesRed() {
         driveForwardSlow(); //Back to the parking tape under the skybridge
@@ -800,7 +655,6 @@ public class Auto extends LinearOpMode {
         sleep(100);
     }
 
-
     void parkStonesBlue() {
         driveForwardSlow();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
@@ -813,16 +667,13 @@ public class Auto extends LinearOpMode {
         }
         stopDriving();
         sleep(100);
-
     }
 
     void rotateR(double heading, double speed) {
-
         Orientation angles;
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
         telemetry.update();
-
 
         rotateRight(speed);
         while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) > heading) && opModeIsActive()) {
@@ -839,17 +690,13 @@ public class Auto extends LinearOpMode {
         robot.frontRightMotor.setPower(speed);
         robot.backLeftMotor.setPower(speed);
         robot.backRightMotor.setPower(speed);
-
     }
 
     void rotateL(double heading, double speed) {
-
         Orientation angles;
-
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
         telemetry.update();
-
 
         rotateLeft(-speed);
         while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) < heading) && opModeIsActive()) {
@@ -866,7 +713,6 @@ public class Auto extends LinearOpMode {
         robot.frontRightMotor.setPower(speed);
         robot.backLeftMotor.setPower(speed);
         robot.backRightMotor.setPower(speed);
-
     }
     void parkMatBlue(){
         double lastTime = runtime.milliseconds();
@@ -875,7 +721,6 @@ public class Auto extends LinearOpMode {
         lastTime = runtime.milliseconds();
         strafeRight(mat,.3, targOrient);
         while(runtime.milliseconds() < lastTime + 1000){
-
         }
         stopDriving(); //We may be able to remove this
         lowerClaw();
@@ -884,6 +729,7 @@ public class Auto extends LinearOpMode {
         }
         stopDriving();
     }
+
     void parkMatRed(){
         double lastTime = runtime.milliseconds();
         Orientation targOrient;
@@ -891,7 +737,6 @@ public class Auto extends LinearOpMode {
         lastTime = runtime.milliseconds();
         strafeLeft(mat,.3, targOrient);
         while(runtime.milliseconds() < lastTime + 1000){
-
         }
         stopDriving(); //We may be able to remove this
         lowerClaw();
@@ -903,10 +748,6 @@ public class Auto extends LinearOpMode {
         stopDriving();
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Formatting
-    //----------------------------------------------------------------------------------------------
-
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
@@ -914,8 +755,4 @@ public class Auto extends LinearOpMode {
     String formatDegrees(double degrees) {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
 }
-
-
-//Lets Go Team! Hi Mom! - Graham

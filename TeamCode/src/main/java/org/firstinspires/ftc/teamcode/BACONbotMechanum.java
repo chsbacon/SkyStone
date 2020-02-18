@@ -140,7 +140,12 @@ public class BACONbotMechanum extends LinearOpMode {
         Boolean released = true;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
+            /*relativeLayout.post(new Runnable() {
+                public void run() {
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;  //used to be green but want white for blue tape
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
+                }
+            });*/
             // In this mode the Left stick moves the robot in the direction pointed to by x,y
             //              the Right stick x controls rotation; right (positive) rotates clockwise
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
