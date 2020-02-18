@@ -195,7 +195,7 @@ public class Auto extends LinearOpMode {
             lastTime = runtime.milliseconds();
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            while (runtime.milliseconds() < lastTime + 1000) {
+            while (runtime.milliseconds() < lastTime + 1500) { //1000 to 1500
                 strafeRight(mat, .3, targOrient);
             }
             stopDriving();
