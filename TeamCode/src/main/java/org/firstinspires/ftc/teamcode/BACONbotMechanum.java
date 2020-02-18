@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.robocol.Heartbeat;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -52,6 +53,10 @@ public class BACONbotMechanum extends LinearOpMode {
     int MOVINGUP = 2;
     int MOVINGDOWN = 3;
     int liftState = STOPPED;
+    int ON = 1;
+    int OFF = 2;
+    int wheelServoState = OFF;
+    int dpad2 = OFF; //dpad2 is off
 
     @Override
     public void runOpMode() {
@@ -268,6 +273,9 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.matServoR.setPosition(freePos);
             }
 
+
+
+
             /*
             if(gamepad1.x){
                 currrentPos = grabPos
@@ -323,6 +331,25 @@ public class BACONbotMechanum extends LinearOpMode {
             if (gamepad2.a) {
                 robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            if (gamepad2.dpad_down && (dpad2 == OFF)) {
+                if (wheelServoState == OFF) {
+                    robot.wheelServoL.setPosition(1.0);
+                    // robot.wheelServoR.setDirection(DcMotorSimple.Direction.REVERSE);
+                    robot.wheelServoR.setPosition(0.0);
+                    wheelServoState = ON;
+
+                } else if (wheelServoState == ON) {
+                    robot.wheelServoL.setPosition(0.48);
+                    robot.wheelServoR.setPosition(0.49);
+                    wheelServoState = OFF;
+
+                }
+                dpad2 = ON;
+            }
+            if (!gamepad2.dpad_down) {
+                dpad2 = OFF;
             }
 
             /*

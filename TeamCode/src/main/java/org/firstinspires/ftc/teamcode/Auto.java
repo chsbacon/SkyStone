@@ -32,6 +32,14 @@ import java.util.Locale;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 //import org.firstinspires.ftc.teamcode.Teleops.HardwareMap;
 
+//TODO: Important things to do in the mat position auto code
+//   - Check where driveForward() and strafeLeft/Right() are in relation to while loop
+//   - Compare to MatPositionTesting branch (that branch is done now)
+//   - Check correct version of all strafes (strafe functions are now correct)
+//   - Figure out the claw raise/lower problem with timing in the park function
+//    (Mr. Dierolf said we can just do a sleep)(Wait until motor/encoder situation is figured out)
+//   - figure out what in the world is going on with the down button on the controller
+//     (Why it's not in the mechanum code anymore
 
 @Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
 //@Disabled
@@ -50,6 +58,9 @@ public class Auto extends LinearOpMode {
     int red = 0;
     int mat = 1;
     int stones = 2;
+    int parallel = 1;
+    int perpendicular = 2;
+    int matPosition;
     int FRONTDIST = 160;
 
 
@@ -124,6 +135,20 @@ public class Auto extends LinearOpMode {
         telemetry.addData("task ", task);
         telemetry.update();
 
+        //Choosing the mat orientation
+        telemetry.addData("Press left bumper for parallel mat position, right bumper for perpendicular mat position", "");
+        telemetry.update();
+        while (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+        }
+        if (gamepad1.left_bumper) {
+            matPosition = parallel;
+        }
+        if (gamepad1.right_bumper) {
+            matPosition=perpendicular;
+        }
+        telemetry.addData("Mat Position ", matPosition);
+        telemetry.update();
+
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
 
         //mat servos up
@@ -183,125 +208,126 @@ public class Auto extends LinearOpMode {
         }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //TODO: BLUE TEAM MAT
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //BLUE TEAM MAT
-        if ((task == mat) && (teamcolor == blue)) {
-            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            robot.blinkinLedDriver.setPattern(robot.pattern);
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
-            {
-                driveForwardSlow();
-            }
-            stopDriving();
-            lastTime = runtime.milliseconds();
-            //this actually makes it go left toward the center of the mat
-            Orientation targOrient;
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            while (runtime.milliseconds() < lastTime + 1000) {
-                strafeRight(mat, .3, targOrient);
-            }
-            stopDriving();
-            driveForwardSlow();
-            sleep(250);
-            stopDriving();
+        if ((task == mat) && (teamcolor == blue) && (matPosition==parallel)) {
+            //Orientation targOrient;
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            //servos down
-            robot.matServoL.setPosition(grabPos);
-            robot.matServoR.setPosition(freePos);
-            sleep(1000); //We can edit this delay based on it we need more time or not
-            //grabmat
-            //drivebacktowall
-            //releasemat
-            //gotored
+            initializeWhiteLight();
+            positionRobotMatBlue();
+            grabMat();
+
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive())
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
             }
             stopDriving();
 
+            releaseMat();
 
-            //mat servos up
-            robot.matServoL.setPosition(freePos);
-            robot.matServoR.setPosition(grabPos);
-            sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            //Actually left towards the skybridge
-            //Senses the red tape under the skybridge and tells the robot to stop
-
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-                strafeLeft(mat,.3, targOrient);
-            }
-            stopDriving();
+            parkMatBlue();
 
             driveBackwardsSlow();
             sleep(500);
             stopDriving();
         }
+        if ((task == mat) && (teamcolor == blue)&&(matPosition==perpendicular)) {
+            //Orientation targOrient;
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-
-        if ((task == mat) && (teamcolor == red)) {
-            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            robot.blinkinLedDriver.setPattern(robot.pattern);
-            driveForwardSlow();
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
-            {
-            }
-            stopDriving();
-            lastTime = runtime.milliseconds();
-            //this actually makes it go right toward the center of the mat
-            Orientation targOrient;
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-            while (runtime.milliseconds() < lastTime + 1000) {
-                strafeLeft(mat, .3, targOrient);
-            }
-            stopDriving();
-            driveForwardSlow();
-            sleep(250);
-            stopDriving();
-
-            //servos down
-            robot.matServoL.setPosition(grabPos);
-            robot.matServoR.setPosition(freePos);
-            sleep(1000); //We can edit this delay based on it we need more time or not
-
+            initializeWhiteLight();
+            positionRobotMatBlue();
+            grabMat();
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive())
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
             }
             stopDriving();
+            matRotateR();
+            stopDriving();
+            releaseMat();
 
-            //mat servos up
-            robot.matServoL.setPosition(freePos);
-            robot.matServoR.setPosition(grabPos);
-            sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            //rotateL(90, .3);
+            //strafeRight();
+            parkMatBlue();
 
-            rotateR(-10.0, 0.3);
+            driveBackwardsSlow();
+            sleep(500);
+            stopDriving();
+        }
+        // -----------------------------------------------------------------------------------------------------------------------
+
+
+        if ((task == mat) && (teamcolor == red)&&(matPosition==perpendicular)) {
+            initializeWhiteLight();
+            positionRobotMatRed();
+            grabMat();
+
+
+            driveBackwardsSlow();
+
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 600) && opModeIsActive()) //drivetomat
+            {
+                telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                telemetry.update();
+            }
+            stopDriving();
+            matRotateR();
+            releaseMat();
+
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
-            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
 
-            while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
-                strafeRight(mat,.3, targOrient);
-                telemetry.addData("Red  ", robot.colorSensorDown.red());
-                telemetry.update();
-            }
-            stopDriving();
+            parkMatRed();
 
             driveBackwardsSlow();
             sleep(500);
             stopDriving();
         }
+        if ((task == mat) && (teamcolor == red)&&(matPosition==parallel)) {
+            initializeWhiteLight();
+            positionRobotMatRed();
+            grabMat();
 
+
+            driveBackwardsSlow();
+
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            {
+                telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                telemetry.update();
+            }
+            stopDriving();
+
+            releaseMat();
+
+            //rotateL(-10.0, 0.3);
+
+            //Actually left towards the skybridge
+            //Senses the BLUE tape under the skybridge and tells the robot to stop
+            //targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+
+            parkMatRed();
+
+            driveBackwardsSlow();
+            sleep(500);
+            stopDriving();
+        }
 
         //TODO What does this part do? It isn't in the same spot as the other things with sensing skystones
         while (opModeIsActive()) {
@@ -423,10 +449,10 @@ public class Auto extends LinearOpMode {
             d = 0;
         }
         // Normalize the values so none exceeds +/- 1.0
-        frontLeft = pwr + r + d;
-        backLeft = -pwr + r + d;
-        backRight = -pwr + r - d;
-        frontRight = pwr + r - d;
+        frontLeft = -pwr + r + d;
+        backLeft = pwr + r + d;
+        backRight = pwr + r - d;
+        frontRight = -pwr + r - d;
         max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
         if (max > 1.0) {
             frontLeft = frontLeft / max;
@@ -484,10 +510,10 @@ public class Auto extends LinearOpMode {
             d = 0;
         }
         // Normalize the values so none exceeds +/- 1.0
-        frontLeft = -pwr + r + d;
-        backLeft = pwr + r + d;
-        backRight = pwr + r - d;
-        frontRight = -pwr + r - d;
+        frontLeft = pwr + r + d;
+        backLeft = -pwr + r + d;
+        backRight = -pwr + r - d;
+        frontRight = pwr + r - d;
         max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
         if (max > 1.0) {
             frontLeft = frontLeft / max;
@@ -835,6 +861,121 @@ public class Auto extends LinearOpMode {
         robot.backLeftMotor.setPower(speed);
         robot.backRightMotor.setPower(speed);
 
+    }
+    void initializeWhiteLight(){
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
+    }
+
+    void positionRobotMatBlue(){
+        double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double lastTime = runtime.milliseconds();
+        //raiseClaw();
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+        {
+            driveForwardSlow();
+        }
+        stopDriving();
+        lastTime = runtime.milliseconds();
+        //this actually makes it go left toward the center of the mat
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        while (runtime.milliseconds() < lastTime + 1000) {
+            strafeLeft(mat, .3, targOrient);
+        }
+        stopDriving();
+        driveForwardSlow();
+        sleep(250);
+        stopDriving();
+    }
+
+    void positionRobotMatRed(){
+        double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double lastTime = runtime.milliseconds();
+        //raiseClaw();
+
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+        {
+            driveForwardSlow();
+        }
+        stopDriving();
+        lastTime = runtime.milliseconds();
+        //this actually makes it go right toward the center of the mat
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        while (runtime.milliseconds() < lastTime + 1000) {
+            strafeRight(mat, .3, targOrient);
+        }
+        stopDriving();
+        driveForwardSlow();
+        sleep(250);
+        stopDriving();
+    }
+
+    void grabMat(){
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
+        //servos down
+        robot.matServoL.setPosition(grabPos);
+        robot.matServoR.setPosition(freePos);
+        sleep(1000); //We can edit this delay based on it we need more time or not
+    }
+
+    void releaseMat(){
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
+        //mat servos up
+        robot.matServoL.setPosition(freePos);
+        robot.matServoR.setPosition(grabPos);
+        sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
+    }
+
+    void parkMatBlue(){
+        double lastTime = runtime.milliseconds();
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeRight(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
+        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+            strafeRight(mat,.3, targOrient);
+        }
+        stopDriving();
+    }
+    void parkMatRed(){
+        double lastTime = runtime.milliseconds();
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeLeft(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
+        while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
+            strafeLeft(mat,.3, targOrient);
+            telemetry.addData("Red  ", robot.colorSensorDown.red());
+            telemetry.update();
+        }
+        stopDriving();
+    }
+    void matRotateR(){
+        robot.frontLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(-0.3);
+        robot.backLeftMotor.setPower(0);
+        robot.backRightMotor.setPower(-0.3);
+    }
+    void matRotateL(){
+        robot.frontLeftMotor.setPower(-0.3);
+        robot.frontRightMotor.setPower(0);
+        robot.backLeftMotor.setPower(-0.3);
+        robot.backRightMotor.setPower(0);
     }
 
     //----------------------------------------------------------------------------------------------

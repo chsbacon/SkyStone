@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -75,6 +76,8 @@ public class HardwareBACONbot
     public Servo    matServoL = null;
     public Servo    matServoR = null;
     public Servo    capstoneServo = null;
+    public Servo  wheelServoL = null;
+    public Servo  wheelServoR = null;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
 
@@ -119,6 +122,8 @@ public class HardwareBACONbot
         colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
         clawServo = hwMap.servo.get("claw"); //H1P5
         capstoneServo = hwMap.servo.get("capstone"); //H1P3
+        wheelServoL = hwMap.servo.get("wheelL");
+        wheelServoR = hwMap.servo.get("wheelR");
 
         matServoL = hwMap.servo.get("matL");
         matServoR = hwMap.servo.get("matR");

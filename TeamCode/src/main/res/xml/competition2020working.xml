@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ3MYA6O" parentModuleAddress="1">
+        <LynxModule name="Expansion Hub 1" port="1">
+            <NeveRest60Gearmotor name="FL" port="0" />
+            <NeveRest60Gearmotor name="FR" port="1" />
+            <NeveRest60Gearmotor name="BL" port="2" />
+            <NeveRest60Gearmotor name="BR" port="3" />
+            <Servo name="claw" port="0" />
+            <RevBlinkinLedDriver name="blinkin" port="1" />
+            <Servo name="capstone" port="3" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+            <LynxColorSensor name="colL" port="0" bus="1" />
+            <LynxColorSensor name="colR" port="0" bus="2" />
+            <LynxColorSensor name="colD" port="0" bus="3" />
+        </LynxModule>
+        <LynxModule name="Expansion Hub 2" port="2">
+            <NeveRest40Gearmotor name="LM" port="0" />
+            <Servo name="matL" port="0" />
+            <Servo name="matR" port="1" />
+            <Servo name="wheelL" port="2" />
+            <Servo name="wheelR" port="3" />
+            <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
+            <REV_VL53L0X_RANGE_SENSOR name="bsr" port="0" bus="1" />
+            <REV_VL53L0X_RANGE_SENSOR name="fsr" port="0" bus="2" />
+        </LynxModule>
+    </LynxUsbDevice>
+</Robot>
