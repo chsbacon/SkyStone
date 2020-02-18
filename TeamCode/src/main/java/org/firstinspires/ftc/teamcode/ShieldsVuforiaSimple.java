@@ -41,7 +41,6 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         // Initialize Vuforia
-        // depreciated -> this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Ask Vuforia to provide RGB565 images.
@@ -51,12 +50,13 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
 
         // Wait for the driver to hit play
         waitForStart();
-        while (opModeIsActive()) {
         // Pull raw images
         VuforiaLocalizer.CloseableFrame frame = null;
         Image rgbImage = null;
-        double yellowCount = 0;
-        boolean SAVE_BITMAPS = false;
+        double yellowL = 0;
+        double yellowC = 0;
+        double yellowR = 0;
+        boolean SAVE_BITMAPS = true;
         int YELLOW_THRESHOLD = 1000;
 
         while (rgbImage == null) {
@@ -83,27 +83,25 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             Bitmap bitmap = createBitmap(rgbImage.getWidth(), rgbImage.getHeight(), Bitmap.Config.RGB_565);
             bitmap.copyPixelsFromBuffer(rgbImage.getPixels());
 
-            // Scribble scrabble
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.rgb(0, 204, 255));
-            paint.setTextSize(60);
-            canvas.drawText("BACON!", bitmap.getWidth() / 2, bitmap.getHeight() / 2, paint);
-
             // Save the file
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmap.png");
 
-            // default image is 1280 x 720
-            // cropped is        640 x 360
-            // scaled is          64 x  36 (2,304 pixels)
-            bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, bitmap.getHeight() / 4, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+            // Default image is 1280 x 720
+            // Cropped is         20 x 400
+            // Scaled is          10 x  40 (400 pixels)
+            int x = 706;
+            int y1 = 160;
+            int y2 = 360;
+            int y3 = 540;
+            bitmap = createBitmap(bitmap, x-10, y1-10, 20, y3-y1+20);
+            // bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, bitmap.getHeight() / 4, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
 
             // Now compress for the scan
-            bitmap = createScaledBitmap(bitmap, 64, 32, true);
+            bitmap = createScaledBitmap(bitmap, 10, 40, true);
 
             // Save the scaled image
             if (SAVE_BITMAPS)
@@ -114,26 +112,36 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             int pixel;
             int bitmapWidth = bitmap.getWidth();
             int bitmapHeight = bitmap.getHeight();
-            // Count the yellow pixels (max of 2,304)
-            for (height = 0; height < bitmapHeight; ++height) {
+
+            for (height = 0; height < bitmapHeight/3; ++height) {
                 for (width = 0; width < bitmapWidth; ++width) {
                     pixel = bitmap.getPixel(width, height);
                     if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
-                        yellowCount += 1;
+                        yellowR += 1;
                     }
                 }
             }
-            if(yellowCount > YELLOW_THRESHOLD)
-                telemetry.addData("How yellow? ", "YELLOW");
-            else
-                telemetry.addData("How yellow? ", "BLACK");
-            //telemetry.addData("How yellow? ", yellowCount);
+            for (height = bitmapHeight/3; height < bitmapHeight/3*2; ++height) {
+                for (width = 0; width < bitmapWidth; ++width) {
+                    pixel = bitmap.getPixel(width, height);
+                    if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
+                        yellowC += 1;
+                    }
+                }
+            }
+            for (height = bitmapHeight/3*2; height < bitmapHeight; ++height) {
+                for (width = 0; width < bitmapWidth; ++width) {
+                    pixel = bitmap.getPixel(width, height);
+                    if (Color.red(pixel) > 100 && Color.green(pixel) > 100 && Color.blue(pixel) < 100) {
+                        yellowL += 1;
+                    }
+                }
+            }
+            telemetry.addData("Left", yellowL);
+            telemetry.addData("Center", yellowC);
+            telemetry.addData("Right", yellowR);
             telemetry.update();
-
-            //while (opModeIsActive()) {
-
-            //}
-        }
+            while(opModeIsActive()) {}
         }
     }
     void saveBitmap(Bitmap bitmap, String fileName) {
