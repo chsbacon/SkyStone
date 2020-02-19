@@ -210,7 +210,7 @@ public class Auto extends LinearOpMode {
             driveBackwardsSlow();
             lastTime = runtime.milliseconds();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75/*used to be75*/) && opModeIsActive() && (runtime.milliseconds()-lastTime) < 5000) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75/*used to be75*/) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -275,7 +275,7 @@ public class Auto extends LinearOpMode {
 
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
