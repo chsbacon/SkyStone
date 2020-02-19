@@ -77,7 +77,7 @@ public class Auto extends LinearOpMode {
         telemetry.update();
         openClaw();
 
-        while (!gamepad1.x && !gamepad1.b) {
+        while (!gamepad1.x && !gamepad1.b ) {
         }
         //This sets the strips of lights and the screen of the phones to the team color
         if (gamepad1.x) {
@@ -526,7 +526,11 @@ public class Auto extends LinearOpMode {
         //sleep(100);
         //We may need to change the alpha values to get consistent readings
         bothYellow = true;
-        while ((bothYellow == true) && opModeIsActive()) {
+        double lastTime = runtime.milliseconds(); // Added this to create a failsafe
+        lastTime = runtime.milliseconds(); //Added this to create a failsafe
+
+        //Added the last part of the while () to create a failsafe
+        while ((bothYellow == true) && opModeIsActive() && runtime.milliseconds()<lastTime + 5000 ) {
             if (color == red) {
                 strafeRight(stones,STRAFE_SPEED, targOrient);
             } else if (color == blue) {
