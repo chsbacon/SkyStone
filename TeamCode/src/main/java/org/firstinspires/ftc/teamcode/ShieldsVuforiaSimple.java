@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Environment;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -91,7 +92,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             // Cropped is        640 x 720
             // Scaled is          64 x  72 (400 pixels)
 
-            bitmap = createBitmap(bitmap, bitmap.getWidth() / 4, 0, bitmap.getWidth() / 2, bitmap.getHeight());
+            bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth() / 2, bitmap.getHeight());
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
@@ -115,10 +116,11 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             int yellowCount;
             boolean foundX = false;
 
-            for (width = bitmapWidth; width > 0; width -= 3) {
+            for (width = 3; width < bitmapWidth-3; width += 3) {
                 pix1 = bitmap.getPixel(width, bitmapHeight/2);
                 pix2 = bitmap.getPixel(width - 1, bitmapHeight/2);
                 pix3 = bitmap.getPixel(width - 2, bitmapHeight/2);
+                Log.i("BACON-width", Integer.toString(width));
                 yellowCount = 0;
                 if (Color.red(pix1) > 100 && Color.green(pix1) > 100 && Color.blue(pix1) < 100)
                     yellowCount += 1;
@@ -131,6 +133,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     xStart = width+30;
                 }
             }
+            Log.i("BACON-xStart", Integer.toString(xStart));
 
             for (height = 0; height < bitmapHeight/3; ++height) {
                 for (width = xStart; width < xStart+40; ++width) {
@@ -161,7 +164,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             if(yellowC < yellowL && yellowC < yellowR)
                     telemetry.addData("Center", "CENTER");
             if(yellowR < yellowC && yellowR < yellowL)
-                telemetry.addData("rIGHT", "RIGHT");
+                telemetry.addData("Right", "RIGHT");
             telemetry.update();
             while(opModeIsActive()) {}
         }
