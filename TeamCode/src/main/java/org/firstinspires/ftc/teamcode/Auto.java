@@ -45,6 +45,7 @@ public class Auto extends LinearOpMode {
     int REDTAPE = 35; // Red tape down sensor color value
     int blue = 1;
     int red = 0;
+    boolean parkonly = false;
     int mat = 1;
     int stones = 2;
     int FRONTDIST = 120; //used to be 160
@@ -77,7 +78,7 @@ public class Auto extends LinearOpMode {
         telemetry.update();
         openClaw();
 
-        while (!gamepad1.x && !gamepad1.b ) {
+        while (!gamepad1.x && !gamepad1.b) {
         }
         //This sets the strips of lights and the screen of the phones to the team color
         if (gamepad1.x) {
@@ -117,8 +118,22 @@ public class Auto extends LinearOpMode {
         if (gamepad1.y) {
             task = stones;
         }
-        telemetry.addData("task ", task);
+        telemetry.addData("Press X for parkonly, b for full auto", "");
         telemetry.update();
+        while (!gamepad1.x && !gamepad1.b) {
+        }
+
+        if (gamepad1.x) {
+            parkonly = true;
+        }
+        if (gamepad1.b) {
+            parkonly = false;
+        }
+
+        telemetry.addData("auto:", parkonly);
+        telemetry.update();
+
+
 
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
 
@@ -130,10 +145,99 @@ public class Auto extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
+        if((parkonly==true)&&(teamcolor==red)&&(task==stones)){
 
+            sleep(20000);
+            driveForwardSlow();
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
+
+            }
+            stopDriving();
+
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
+                strafeLeft(stones, .3,targOrient);
+                sleep(10);
+                telemetry.addData("parking Red  ", robot.colorSensorDown.red());
+                telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
+                telemetry.update();
+            }
+            stopDriving();
+            sleep(100);
+
+
+        }
+        if((parkonly==true)&&(teamcolor==red)&&(task==mat)){
+
+            sleep(20000);
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
+                strafeRight(mat, .3,targOrient);
+                sleep(10);
+                telemetry.addData("parking Red  ", robot.colorSensorDown.red());
+                telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
+                telemetry.update();
+            }
+            stopDriving();
+            sleep(100);
+
+
+        }
+        if((parkonly==true)&&(teamcolor ==blue)&&(task==stones)){
+
+            sleep(20000);
+            driveForwardSlow();
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
+
+            }
+            stopDriving();
+
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+                strafeRight(stones, .3,targOrient);
+                sleep(10);
+                telemetry.addData("parking Blue  ", robot.colorSensorDown.blue());
+                telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
+                telemetry.update();
+            }
+            stopDriving();
+            sleep(100);
+
+
+        }
+        if((parkonly==true)&&(teamcolor==blue)&&(task==mat)){
+
+            sleep(20000);
+            driveForwardSlow();
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
+
+            }
+            stopDriving();
+
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+                strafeLeft(mat, .3,targOrient);
+                sleep(10);
+                telemetry.addData("parking Blue  ", robot.colorSensorDown.blue());
+                telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
+                telemetry.update();
+            }
+            stopDriving();
+            sleep(100);
+
+
+        }
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //First troubleshooting steps for this section would be to check the direction of the strafes in scan and grab
-        if ((task == stones) && (teamcolor == red)) {
+        if ((task == stones) && (teamcolor == red)&& !parkonly) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
@@ -155,7 +259,7 @@ public class Auto extends LinearOpMode {
             stopDriving();
 
         }
-        if ((task == stones) && (teamcolor == blue)) {
+        if ((task == stones) && (teamcolor == blue)&& !parkonly) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
@@ -180,7 +284,7 @@ public class Auto extends LinearOpMode {
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //BLUE TEAM MAT
-        if ((task == mat) && (teamcolor == blue)) {
+        if ((task == mat) && (teamcolor == blue)&& !parkonly) {
             //robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             //robot.blinkinLedDriver.setPattern(robot.pattern);
 
@@ -244,7 +348,7 @@ public class Auto extends LinearOpMode {
         }
 
 
-        if ((task == mat) && (teamcolor == red)) {
+        if ((task == mat) && (teamcolor == red)&& !parkonly) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
 
@@ -530,7 +634,7 @@ public class Auto extends LinearOpMode {
         lastTime = runtime.milliseconds(); //Added this to create a failsafe
 
         //Added the last part of the while () to create a failsafe
-        while ((bothYellow == true) && opModeIsActive() && runtime.milliseconds()<lastTime + 5000 ) {
+        while ((bothYellow == true) && opModeIsActive() && (runtime.milliseconds()<lastTime + 4000) ) {
             if (color == red) {
                 strafeRight(stones,STRAFE_SPEED, targOrient);
             } else if (color == blue) {
@@ -576,9 +680,9 @@ public class Auto extends LinearOpMode {
             telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
             //telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
             telemetry.update();
-            telemetry.log();
             Log.i("BACON:", "SAYWHAT?");
         }
+        stopDriving();
         telemetry.addData("SICK", "I SEE A SKYSTONE");
         telemetry.update();
         robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
@@ -609,6 +713,7 @@ public class Auto extends LinearOpMode {
         while ((robot.frontDistance.getDistance(DistanceUnit.MM) > FRONTDIST) && opModeIsActive()) {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
+            Log.i("BACON", Double.toString(robot.frontDistance.getDistance(DistanceUnit.MM)) );
         }
     }
 
@@ -640,11 +745,11 @@ public class Auto extends LinearOpMode {
     }
 
     void openClaw() {
-        robot.clawServo.setPosition(1);
+        robot.clawServo.setPosition(.75);
     }
 
     void closeClaw() {
-        robot.clawServo.setPosition(0);
+        robot.clawServo.setPosition(.2);
     }
 
     void parkStonesRed() {
