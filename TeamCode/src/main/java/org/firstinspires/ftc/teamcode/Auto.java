@@ -41,7 +41,7 @@ public class Auto extends LinearOpMode {
     double STRAFE_SPEED = 0.3;  // Motor power global variables
     double FAST_SPEED = 1.0;
     double SLOW_SPEED = 0.2;
-    int BLUETAPE = 30; // Blue tape down sensor color value
+    int BLUETAPE = 25; // Blue tape down sensor color value
     int REDTAPE = 35; // Red tape down sensor color value
     int blue = 1;
     int red = 0;
@@ -200,7 +200,7 @@ public class Auto extends LinearOpMode {
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+            while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
                 strafeRight(stones, .3,targOrient);
                 sleep(10);
                 telemetry.addData("parking Blue  ", robot.colorSensorDown.blue());
@@ -219,7 +219,7 @@ public class Auto extends LinearOpMode {
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+            while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
                 strafeLeft(mat, .3,targOrient);
                 sleep(10);
                 telemetry.addData("parking Blue  ", robot.colorSensorDown.blue());
@@ -333,7 +333,7 @@ public class Auto extends LinearOpMode {
             lowerClaw();
             sleep(500);
 
-            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+            while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
                 strafeLeft(mat,.3, targOrient);
             }
             stopDriving();
@@ -598,7 +598,7 @@ public class Auto extends LinearOpMode {
         sleep(250);
         driveBackwardsSlow();
         //Stop at the blue tape
-        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
         }
         stopDriving();
     }
@@ -766,7 +766,7 @@ public class Auto extends LinearOpMode {
         driveForwardSlow();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
         //TODO create a blue version of the red check
-        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
             sleep(10);
             telemetry.addData("parking Blue  ", robot.colorSensorDown.red());
             telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
@@ -831,7 +831,7 @@ public class Auto extends LinearOpMode {
         }
         stopDriving(); //We may be able to remove this
         lowerClaw();
-        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
             strafeRight(mat,.3, targOrient);
         }
         stopDriving();
