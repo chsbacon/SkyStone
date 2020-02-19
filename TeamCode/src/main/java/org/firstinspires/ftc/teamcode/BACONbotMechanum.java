@@ -57,6 +57,7 @@ public class BACONbotMechanum extends LinearOpMode {
     int OFF = 2;
     int wheelServoState = OFF;
     int dpad2 = OFF; //dpad2 is off
+    double sp;
 
     @Override
     public void runOpMode() {
@@ -100,6 +101,8 @@ public class BACONbotMechanum extends LinearOpMode {
         */
 
         robot.capstoneServo.setPosition(.5);
+        sp = .75;
+        robot.clawServo.setPosition(sp);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -294,22 +297,21 @@ public class BACONbotMechanum extends LinearOpMode {
             */
 
             //Claw Servo (Blocks)
-            double sp;
-            sp = robot.clawServo.getPosition();
-
+            telemetry.addData("Claw Servo Position", robot.clawServo.getPosition());
+            telemetry.update();
 
             if (gamepad2.x && (xUp == 1)) {
                 xUp = 0;
-
-                if (sp == 0) {
-                    robot.clawServo.setPosition(.2);
+                if (sp == 0.2) {
+                    sp = 0.75;
+                    robot.clawServo.setPosition(sp);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
                     robot.wheelServoL.setPosition(.75);
                     robot.wheelServoR.setPosition(.25);
-                }
-                if (sp == 1) {
-                    robot.clawServo.setPosition(.75);
+                } else if (sp == .75) {
+                    sp = .2;
+                    robot.clawServo.setPosition(sp);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
                     robot.wheelServoL.setPosition(.5);

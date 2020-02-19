@@ -49,6 +49,7 @@ public class Auto extends LinearOpMode {
     int mat = 1;
     int stones = 2;
     int FRONTDIST = 120; //used to be 160
+    int parkWait = 5000;
 
     // ==============================
     public void runOpMode() {
@@ -130,7 +131,7 @@ public class Auto extends LinearOpMode {
             parkonly = false;
         }
 
-        telemetry.addData("auto:", parkonly);
+        telemetry.addData("parkonly:", parkonly);
         telemetry.update();
 
 
@@ -147,9 +148,9 @@ public class Auto extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         if((parkonly==true)&&(teamcolor==red)&&(task==stones)){
 
-            sleep(20000);
+            sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 3000 ){
 
             }
             stopDriving();
@@ -171,7 +172,7 @@ public class Auto extends LinearOpMode {
         }
         if((parkonly==true)&&(teamcolor==red)&&(task==mat)){
 
-            sleep(20000);
+            sleep(parkWait);
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -189,9 +190,9 @@ public class Auto extends LinearOpMode {
         }
         if((parkonly==true)&&(teamcolor ==blue)&&(task==stones)){
 
-            sleep(20000);
+            sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 3000 ){
 
             }
             stopDriving();
@@ -213,12 +214,7 @@ public class Auto extends LinearOpMode {
         }
         if((parkonly==true)&&(teamcolor==blue)&&(task==mat)){
 
-            sleep(20000);
-            driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 5000 ){
-
-            }
-            stopDriving();
+            sleep(parkWait);
 
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -314,7 +310,7 @@ public class Auto extends LinearOpMode {
             driveBackwardsSlow();
             lastTime = runtime.milliseconds();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75/*used to be75*/) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 50/*used to be75*/) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -364,12 +360,12 @@ public class Auto extends LinearOpMode {
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (runtime.milliseconds() < lastTime + 1250) {
+            while (runtime.milliseconds() < lastTime + 1500) {  //Different from red side
                 strafeLeft(mat, .3, targOrient);
             }
             stopDriving();
             driveForwardSlow();
-            sleep(250);
+            sleep(500);
             stopDriving();
 
             //servos down
@@ -378,8 +374,9 @@ public class Auto extends LinearOpMode {
             sleep(1000); //We can edit this delay based on it we need more time or not
 
             driveBackwardsSlow();
+            lastTime = runtime.milliseconds();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 75) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 50) && ((runtime.milliseconds()-lastTime) < 5000) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
