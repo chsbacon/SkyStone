@@ -150,7 +150,7 @@ public class Auto extends LinearOpMode {
 
             sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 3000 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 700 ){
 
             }
             stopDriving();
@@ -192,7 +192,7 @@ public class Auto extends LinearOpMode {
 
             sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 3000 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 700 ){
 
             }
             stopDriving();
