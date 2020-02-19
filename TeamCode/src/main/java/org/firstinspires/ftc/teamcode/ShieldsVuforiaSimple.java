@@ -115,10 +115,10 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             int yellowCount;
             boolean foundX = false;
 
-            for (width = 0; width < bitmapWidth-3; width += 3) {
+            for (width = bitmapWidth; width > 0; width -= 3) {
                 pix1 = bitmap.getPixel(width, bitmapHeight/2);
-                pix2 = bitmap.getPixel(width + 1, bitmapHeight/2);
-                pix3 = bitmap.getPixel(width + 2, bitmapHeight/2);
+                pix2 = bitmap.getPixel(width - 1, bitmapHeight/2);
+                pix3 = bitmap.getPixel(width - 2, bitmapHeight/2);
                 yellowCount = 0;
                 if (Color.red(pix1) > 100 && Color.green(pix1) > 100 && Color.blue(pix1) < 100)
                     yellowCount += 1;
@@ -156,9 +156,12 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     }
                 }
             }
-            telemetry.addData("Left", yellowL);
-            telemetry.addData("Center", yellowC);
-            telemetry.addData("Right", yellowR);
+            if(yellowL < yellowC && yellowL < yellowR)
+                telemetry.addData("Left", "LEFT");
+            if(yellowC < yellowL && yellowC < yellowR)
+                    telemetry.addData("Center", "CENTER");
+            if(yellowR < yellowC && yellowR < yellowL)
+                telemetry.addData("rIGHT", "RIGHT");
             telemetry.update();
             while(opModeIsActive()) {}
         }
