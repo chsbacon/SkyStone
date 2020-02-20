@@ -166,21 +166,23 @@ public class Auto extends LinearOpMode {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
-            raiseClaw();
+            //raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
-            positionRobot();
+            //positionRobot();
+            Orientation targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            headingPowerTime(1, .3, 4, targOrient);
             //This performs the scanning operation until we find a Skystone
-            scan(red); //2 means red
+            //scan(red); //2 means red
             //Setting it up to go up and grab the Skystone
             grabPrep();
             //Pick up the Skystone
             grabStone();
             //rotate to face mat side
-            rotateR(-80.0, 0.3); //heading was at 85
+            //rotateR(-80.0, 0.3); //heading was at 85
             //Park on the tape
-            parkStonesRed();
+            //parkStonesRed();
             //go drop the stone in the build zone and return to the parking line
-            outAndBackRed();
+           // outAndBackRed();
             stopDriving();
 
         }
@@ -527,6 +529,88 @@ public class Auto extends LinearOpMode {
         robot.backLeftMotor.setPower(backLeft); //Changing the order in which the wheels start
         robot.backRightMotor.setPower(backRight);
         robot.frontRightMotor.setPower(frontRight);
+    }
+
+    void headingPowerTime(double heading, double pwr, double t, Orientation targ) {
+        // this is a new branch :)
+
+        /* pwr(sin(heading+45))+r [M4]------[M1] pwr(cos(heading+45))-r
+                                    |        |
+                                    |        |
+           pwr(cos(heading+45))+r [M3]------[M2] pwr(sin(heading+45))-r */
+
+        /*
+        double r = 0;
+        double M1 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)-r;
+        double M2 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)-r;
+        double M3 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)+r;
+        double M4 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)+r;
+        */
+
+        /*
+        double x = pwr*Math.cos(Math.toRadians(heading));
+        double y = pwr*Math.sin(Math.toRadians(heading));
+         */
+
+        int STONEX = 20;
+        int STONEY = 48;
+
+        double x = STONEX/Math.sqrt(STONEX^2 +  STONEY^2);
+        double y = STONEY/Math.sqrt(STONEX^2 +  STONEY^2);
+
+        // trueHead is the current orientation.  It shouldn't change!
+        Orientation trueHead;
+        trueHead = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double trueAng = trueHead.angleUnit.DEGREES.normalize(trueHead.firstAngle);
+
+        double startTime = runtime.milliseconds();
+        double lastTime =  startTime;
+        double now;
+        while (runtime.milliseconds() < (startTime + t*1000) && opModeIsActive()) {
+            now = runtime.milliseconds();
+            if(now > lastTime + 50) {
+                // fix any heading drift
+                Orientation currOrient;
+                currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+                double error = trueAng - currAng;
+                telemetry.addData("error:", error);
+                double r = error / 180 * pwr * 0.5;
+
+                if ((r < .07) && (r > 0)) {
+                    r = .07;
+                } else if ((r > -.07) && (r < 0)) {
+                    r = -.07;
+                }
+
+                // mecanum math
+                double M2 = +y - x + r;
+                double M1 = +y + x + r;
+                double M3 = -y - x + r;
+                double M4 = -y + x + r;
+
+                double max;
+                max = Math.max(Math.max(Math.abs(M2), Math.abs(M1)), Math.max(Math.abs(M3), Math.abs(M4)));
+                if (max > 1.0) {
+                    M2 = M2 / max;
+                    M1 = M1 / max;
+                    M3 = M3 / max;
+                    M4 = M4 / max;
+                }
+
+                robot.frontLeftMotor.setPower(M4);
+                robot.backLeftMotor.setPower(M3);
+                robot.backRightMotor.setPower(M2);
+                robot.frontRightMotor.setPower(M1);
+
+                telemetry.addData("M1:", M1);
+                telemetry.addData("M2:", M2);
+                telemetry.addData("M3:", M3);
+                telemetry.addData("M4:", M4);
+                telemetry.update();
+                lastTime = now;
+            }
+        }
     }
 
 
