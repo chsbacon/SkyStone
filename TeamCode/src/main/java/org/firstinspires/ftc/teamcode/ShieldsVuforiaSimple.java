@@ -18,6 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
@@ -92,7 +94,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             // Cropped is        640 x 720
             // Scaled is          64 x  72 (400 pixels)
 
-            bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth() / 2, bitmap.getHeight());
+            bitmap = createBitmap(bitmap, bitmap.getWidth() / 2, 0, bitmap.getWidth() / 2, bitmap.getHeight());
             // Save the cropped image
             if (SAVE_BITMAPS)
                 saveBitmap(bitmap, "myBitmapCropped.png");
@@ -115,26 +117,31 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             int bitmapHeight = bitmap.getHeight();
             int yellowCount;
             boolean foundX = false;
+            int rowYs[] = {bitmapHeight/6, bitmapHeight/2, bitmapHeight/6*5};
+            int rowYellows[] = {bitmapWidth, bitmapWidth, bitmapWidth};
+            Log.i("BACON", Integer.toString(bitmapWidth));
 
-            for (width = 3; width < bitmapWidth-3; width += 3) {
-                pix1 = bitmap.getPixel(width, bitmapHeight/2);
-                pix2 = bitmap.getPixel(width - 1, bitmapHeight/2);
-                pix3 = bitmap.getPixel(width - 2, bitmapHeight/2);
-                Log.i("BACON-width", Integer.toString(width));
-                yellowCount = 0;
-                if (Color.red(pix1) > 100 && Color.green(pix1) > 100 && Color.blue(pix1) < 100)
-                    yellowCount += 1;
-                if (Color.red(pix2) > 100 && Color.green(pix2) > 100 && Color.blue(pix2) < 100)
-                    yellowCount += 1;
-                if (Color.red(pix3) > 100 && Color.green(pix3) > 100 && Color.blue(pix3) < 100)
-                    yellowCount += 1;
-                if (yellowCount == 3 && !foundX) {
-                    foundX = true;
-                    xStart = width+30;
+            for (int i=0; i < rowYs.length; i++) {
+                Log.i("BACON-loop", Integer.toString(i));
+                for (width = bitmapWidth-1; width > 3; width -= 3) {
+                    pix1 = bitmap.getPixel(width, rowYs[i]);
+                    pix2 = bitmap.getPixel(width - 1, rowYs[i]);
+                    pix3 = bitmap.getPixel(width - 2, rowYs[i]);
+                    yellowCount = 0;
+                    if (Color.red(pix1) > 100 && Color.green(pix1) > 100 && Color.blue(pix1) < 100)
+                        yellowCount += 1;
+                    if (Color.red(pix2) > 100 && Color.green(pix2) > 100 && Color.blue(pix2) < 100)
+                        yellowCount += 1;
+                    if (Color.red(pix3) > 100 && Color.green(pix3) > 100 && Color.blue(pix3) < 100)
+                        yellowCount += 1;
+                    if (yellowCount == 3 && !foundX) {
+                        foundX = true;
+                        rowYellows[i] = width;
+                    }
                 }
             }
             Log.i("BACON-xStart", Integer.toString(xStart));
-
+            /*
             for (height = 0; height < bitmapHeight/3; ++height) {
                 for (width = xStart; width < xStart+40; ++width) {
                     pixel = bitmap.getPixel(width, height);
@@ -159,12 +166,19 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     }
                 }
             }
-            if(yellowL < yellowC && yellowL < yellowR)
-                telemetry.addData("Left", "LEFT");
-            if(yellowC < yellowL && yellowC < yellowR)
-                    telemetry.addData("Center", "CENTER");
-            if(yellowR < yellowC && yellowR < yellowL)
-                telemetry.addData("Right", "RIGHT");
+            */
+            telemetry.addData("rowYellow0", rowYellows[0]);
+            telemetry.addData("rowYellow1", rowYellows[1]);
+            telemetry.addData("rowYellow2", rowYellows[2]);
+            /*
+            if(rowYellows[0] < rowYellows[1] && rowYellows[0] < rowYellows[2])
+                telemetry.addData("Stone", "RIGHT");
+            if(rowYellows[1] < rowYellows[0] && rowYellows[1] < rowYellows[2])
+                    telemetry.addData("Stone", "CENTER");
+            if(rowYellows[2] < rowYellows[0] && rowYellows[2] < rowYellows[1])
+                telemetry.addData("Stone", "LEFT");
+
+             */
             telemetry.update();
             while(opModeIsActive()) {}
         }
