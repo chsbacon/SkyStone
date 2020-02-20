@@ -252,6 +252,7 @@ public class Auto extends LinearOpMode {
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
             raiseClaw();
+            raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
@@ -273,6 +274,7 @@ public class Auto extends LinearOpMode {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
+            raiseClaw();
             raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
@@ -708,7 +710,7 @@ public class Auto extends LinearOpMode {
 
     void raiseClaw() {
         robot.liftMotor.setPower(-1);
-        while ((robot.liftMotor.getCurrentPosition() > -1500) && opModeIsActive()) {
+        while ((robot.liftMotor.getCurrentPosition() > -2250) && opModeIsActive()) {
             telemetry.addData("raiseClaw pos: ", robot.liftMotor.getCurrentPosition());
             telemetry.update();
         }
@@ -736,7 +738,7 @@ public class Auto extends LinearOpMode {
 
     void grabPrep() {
         driveBackwardsSlow();
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) < 200) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) < 300) && opModeIsActive()) {
             telemetry.addData("driveBackwards  dist(mm): ", robot.backDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
             sleep(10);
@@ -748,6 +750,10 @@ public class Auto extends LinearOpMode {
 
     void grabStone() {
         stopDriving();
+        openClaw();
+        sleep(1000);
+        robot.wheelServoL.setPosition(.75);
+        robot.wheelServoR.setPosition(.25);
         driveForwardSlow();
         sleep(1500);
         telemetry.addData("I stop", "I have entered the Grab Phase");
@@ -756,6 +762,10 @@ public class Auto extends LinearOpMode {
         sleep(500);
         closeClaw();
         sleep(500);
+
+        robot.wheelServoL.setPosition(.5);
+        robot.wheelServoR.setPosition(.5);
+
         driveBackwardsSlow();
         sleep(1500);
         stopDriving();
