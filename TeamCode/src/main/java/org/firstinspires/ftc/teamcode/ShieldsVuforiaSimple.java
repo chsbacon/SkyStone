@@ -123,6 +123,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
 
             for (int i=0; i < rowYs.length; i++) {
                 Log.i("BACON-loop", Integer.toString(i));
+                foundX = false;
                 for (width = bitmapWidth-1; width > 3; width -= 3) {
                     pix1 = bitmap.getPixel(width, rowYs[i]);
                     pix2 = bitmap.getPixel(width - 1, rowYs[i]);
@@ -166,11 +167,11 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
                     }
                 }
             }
-            */
+
             telemetry.addData("rowYellow0", rowYellows[0]);
             telemetry.addData("rowYellow1", rowYellows[1]);
             telemetry.addData("rowYellow2", rowYellows[2]);
-            /*
+            */
             if(rowYellows[0] < rowYellows[1] && rowYellows[0] < rowYellows[2])
                 telemetry.addData("Stone", "RIGHT");
             if(rowYellows[1] < rowYellows[0] && rowYellows[1] < rowYellows[2])
@@ -178,7 +179,7 @@ public class ShieldsVuforiaSimple extends LinearOpMode {
             if(rowYellows[2] < rowYellows[0] && rowYellows[2] < rowYellows[1])
                 telemetry.addData("Stone", "LEFT");
 
-             */
+
             telemetry.update();
             while(opModeIsActive()) {}
         }
