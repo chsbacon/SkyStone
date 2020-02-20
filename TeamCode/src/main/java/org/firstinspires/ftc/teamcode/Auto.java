@@ -149,9 +149,10 @@ public class Auto extends LinearOpMode {
         if((parkonly==true)&&(teamcolor==red)&&(task==stones)){
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
+            closeClaw();
             sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 700 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 650 ){
 
             }
             stopDriving();
@@ -167,6 +168,7 @@ public class Auto extends LinearOpMode {
                 telemetry.update();
             }
             stopDriving();
+            driveForwardSlow();
             sleep(100);
 
 
@@ -174,7 +176,11 @@ public class Auto extends LinearOpMode {
         if((parkonly==true)&&(teamcolor==red)&&(task==mat)){
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
+            closeClaw();
             sleep(parkWait);
+            driveForward();
+            sleep(100);
+
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -193,9 +199,10 @@ public class Auto extends LinearOpMode {
         if((parkonly==true)&&(teamcolor ==blue)&&(task==stones)){
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
+            closeClaw();
             sleep(parkWait);
             driveForwardSlow();
-            while(robot.backDistance.getDistance(DistanceUnit.MM) < 700 ){
+            while(robot.backDistance.getDistance(DistanceUnit.MM) < 650 ){
 
             }
             stopDriving();
@@ -211,6 +218,7 @@ public class Auto extends LinearOpMode {
                 telemetry.update();
             }
             stopDriving();
+            driveForwardSlow();
             sleep(100);
 
 
@@ -218,8 +226,10 @@ public class Auto extends LinearOpMode {
         if((parkonly==true)&&(teamcolor==blue)&&(task==mat)){
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
+            closeClaw();
             sleep(parkWait);
-
+            driveForward();
+            sleep(100);
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -290,6 +300,7 @@ public class Auto extends LinearOpMode {
 
             closeClaw();
             raiseClaw();
+            raiseClaw();
 
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
@@ -335,6 +346,8 @@ public class Auto extends LinearOpMode {
 
             stopDriving();
             lowerClaw();
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
             sleep(500);
 
             while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
@@ -353,6 +366,7 @@ public class Auto extends LinearOpMode {
             robot.blinkinLedDriver.setPattern(robot.pattern);
 
             closeClaw();
+            raiseClaw();
             raiseClaw();
 
             driveForwardSlow();
@@ -400,6 +414,8 @@ public class Auto extends LinearOpMode {
 
             stopDriving();
             lowerClaw();
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
             sleep(500);
 
             while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
@@ -756,6 +772,8 @@ public class Auto extends LinearOpMode {
     void parkStonesRed() {
         driveForwardSlow(); //Back to the parking tape under the skybridge
         //Stop at the red tape
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
         while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
             sleep(10);
             telemetry.addData("parking Red  ", robot.colorSensorDown.red());
@@ -770,6 +788,8 @@ public class Auto extends LinearOpMode {
         driveForwardSlow();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
         //TODO create a blue version of the red check
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
         while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
             sleep(10);
             telemetry.addData("parking Blue  ", robot.colorSensorDown.red());
@@ -827,6 +847,8 @@ public class Auto extends LinearOpMode {
     }
     void parkMatBlue(){
         double lastTime = runtime.milliseconds();
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         lastTime = runtime.milliseconds();
@@ -843,6 +865,8 @@ public class Auto extends LinearOpMode {
 
     void parkMatRed(){
         double lastTime = runtime.milliseconds();
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         lastTime = runtime.milliseconds();
