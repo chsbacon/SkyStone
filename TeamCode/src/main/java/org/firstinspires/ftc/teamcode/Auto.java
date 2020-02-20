@@ -578,6 +578,71 @@ public class Auto extends LinearOpMode {
         robot.frontRightMotor.setPower(frontRight);
     }
 
+    void headingPowerTime(double heading, double pwr, double t, Orientation targ) {
+        // this is a new branch :)
+
+        /* pwr(sin(heading+45))+r [M4]------[M1] pwr(cos(heading+45))-r
+                                    |        |
+                                    |        |
+           pwr(cos(heading+45))+r [M3]------[M2] pwr(sin(heading+45))-r */
+
+        /*
+        double r = 0;
+        double M1 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)-r;
+        double M2 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)-r;
+        double M3 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)+r;
+        double M4 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)+r;
+        */
+
+        double x = pwr*Math.cos(Math.toRadians(heading));
+        double y = pwr*Math.sin(Math.toRadians(heading));
+
+        // trueHead is the current orientation.  It shouldn't change!
+        Orientation trueHead;
+        trueHead = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double trueAng = trueHead.angleUnit.DEGREES.normalize(trueHead.firstAngle);
+
+        double startTime = runtime.milliseconds();
+        double lastTime =  startTime;
+        double now;
+        while (runtime.milliseconds() < (startTime + t*1000) && opModeIsActive()) {
+            now = runtime.milliseconds();
+            if(now > lastTime + 50) {
+                // fix any heading drift
+                Orientation currOrient;
+                currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+                double error = trueAng - currAng;
+                telemetry.addData("error:", error);
+                double r = error / 180 * pwr * 0.5;
+
+                if ((r < .07) && (r > 0)) {
+                    r = .07;
+                } else if ((r > -.07) && (r < 0)) {
+                    r = -.07;
+                }
+
+                // mecanum math
+                double M2 = +y - x + r;
+                double M1 = +y + x + r;
+                double M3 = -y - x + r;
+                double M4 = -y + x + r;
+
+                robot.frontLeftMotor.setPower(M4);
+                robot.backLeftMotor.setPower(M3);
+                robot.backRightMotor.setPower(M2);
+                robot.frontRightMotor.setPower(M1);
+
+                telemetry.addData("M1:", M1);
+                telemetry.addData("M2:", M2);
+                telemetry.addData("M3:", M3);
+                telemetry.addData("M4:", M4);
+                telemetry.update();
+                lastTime = now;
+            }
+        }
+    }
+
     void outAndBackRed() {
         driveForwardSlow(); //Out from the parking tape under the skybridge
         sleep(1000);
