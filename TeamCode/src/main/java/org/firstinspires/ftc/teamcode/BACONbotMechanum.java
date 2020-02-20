@@ -58,6 +58,8 @@ public class BACONbotMechanum extends LinearOpMode {
     int wheelServoState = OFF;
     int dpad2 = OFF; //dpad2 is off
     double sp;
+    int OPEN = 1;
+    int CLOSED = 0;
 
     @Override
     public void runOpMode() {
@@ -118,7 +120,7 @@ public class BACONbotMechanum extends LinearOpMode {
         float freePos = 1;  //change these later  (written 12-3-19)
 
         float currentPos = 0;
-        double clawServoState;
+        int clawServoState = OPEN;
         double x;
         double y;
         double r;
@@ -252,7 +254,7 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
             //matServo Servo Position
-            double spL;
+           /* double spL;
             spL = robot.matServoL.getPosition();
             double spR;
             spR = robot.matServoR.getPosition();
@@ -267,16 +269,16 @@ public class BACONbotMechanum extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 robot.matServoL.setPosition(spL - .1);
                 robot.matServoR.setPosition(spR + .1);
-            }
+            }*/
 
             double GrabPos = 1;
             double FreePos = 0;
 
-            if (gamepad1.dpad_down) {
+            if (gamepad2.dpad_down) {
                 robot.matServoL.setPosition(freePos);
                 robot.matServoR.setPosition(grabPos);
             }
-            if (gamepad1.dpad_up) {
+            if (gamepad2.dpad_up) {
                 robot.matServoL.setPosition(grabPos);
                 robot.matServoR.setPosition(freePos);
             }
@@ -307,16 +309,23 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.clawServo.setPosition(sp);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
-                    robot.wheelServoL.setPosition(.75);
-                    robot.wheelServoR.setPosition(.25);
+                    clawServoState = OPEN;
                 } else if (sp == .75) {
                     sp = .2;
                     robot.clawServo.setPosition(sp);
                     robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                     robot.blinkinLedDriver.setPattern(robot.pattern);
-                    robot.wheelServoL.setPosition(.5);
-                    robot.wheelServoR.setPosition(.5);
+                    clawServoState = CLOSED;
                 }
+            }
+
+            if(clawServoState == OPEN && robot.liftMotor.getCurrentPosition() > -2000){
+                robot.wheelServoL.setPosition(.75);
+                robot.wheelServoR.setPosition(.25);
+            }
+            else{
+                robot.wheelServoL.setPosition(.5);
+                robot.wheelServoR.setPosition(.5);
             }
 
 

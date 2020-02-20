@@ -49,7 +49,7 @@ public class Auto extends LinearOpMode {
     int mat = 1;
     int stones = 2;
     int FRONTDIST = 120; //used to be 160
-    int parkWait = 5000;
+    int parkWait = 20000;
 
     // ==============================
     public void runOpMode() {
@@ -252,7 +252,7 @@ public class Auto extends LinearOpMode {
             robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
             raiseClaw();
-            raiseClaw();
+            //raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
@@ -578,70 +578,6 @@ public class Auto extends LinearOpMode {
         robot.frontRightMotor.setPower(frontRight);
     }
 
-    void headingPowerTime(double heading, double pwr, double t, Orientation targ) {
-        // this is a new branch :)
-
-        /* pwr(sin(heading+45))+r [M4]------[M1] pwr(cos(heading+45))-r
-                                    |        |
-                                    |        |
-           pwr(cos(heading+45))+r [M3]------[M2] pwr(sin(heading+45))-r */
-
-        /*
-        double r = 0;
-        double M1 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)-r;
-        double M2 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)-r;
-        double M3 = pwr*Math.cos(Math.toRadians(heading)+Math.PI/4)+r;
-        double M4 = pwr*Math.sin(Math.toRadians(heading)+Math.PI/4)+r;
-        */
-
-        double x = pwr*Math.cos(Math.toRadians(heading));
-        double y = pwr*Math.sin(Math.toRadians(heading));
-
-        // trueHead is the current orientation.  It shouldn't change!
-        Orientation trueHead;
-        trueHead = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double trueAng = trueHead.angleUnit.DEGREES.normalize(trueHead.firstAngle);
-
-        double startTime = runtime.milliseconds();
-        double lastTime =  startTime;
-        double now;
-        while (runtime.milliseconds() < (startTime + t*1000) && opModeIsActive()) {
-            now = runtime.milliseconds();
-            if(now > lastTime + 50) {
-                // fix any heading drift
-                Orientation currOrient;
-                currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
-                double error = trueAng - currAng;
-                telemetry.addData("error:", error);
-                double r = error / 180 * pwr * 0.5;
-
-                if ((r < .07) && (r > 0)) {
-                    r = .07;
-                } else if ((r > -.07) && (r < 0)) {
-                    r = -.07;
-                }
-
-                // mecanum math
-                double M2 = +y - x + r;
-                double M1 = +y + x + r;
-                double M3 = -y - x + r;
-                double M4 = -y + x + r;
-
-                robot.frontLeftMotor.setPower(M4);
-                robot.backLeftMotor.setPower(M3);
-                robot.backRightMotor.setPower(M2);
-                robot.frontRightMotor.setPower(M1);
-
-                telemetry.addData("M1:", M1);
-                telemetry.addData("M2:", M2);
-                telemetry.addData("M3:", M3);
-                telemetry.addData("M4:", M4);
-                telemetry.update();
-                lastTime = now;
-            }
-        }
-    }
 
     void outAndBackRed() {
         driveForwardSlow(); //Out from the parking tape under the skybridge
@@ -966,3 +902,90 @@ public class Auto extends LinearOpMode {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
+/*
+Going to 1000 lines
+
+
+
+=================================
+=================================
+=================================
+
+
+
+ ____          _____ ____  _   _
+|  _ \   /\   / ____/ __ \| \ | |
+| |_) | /  \ | |   | |  | |  \| |
+|  _ < / /\ \| |   | |  | | . ` |
+| |_) / ____ \ |___| |__| | |\  |
+|____/_/    \_\_____\____/|_| \_|
+
+
+
+
+=================================
+=================================
+=================================
+
+
+
+
+                                  _______
+                           _,,ad8888888888bba,_
+                        ,ad88888I888888888888888ba,
+                      ,88888888I88888888888888888888a,
+                    ,d888888888I8888888888888888888888b,
+                   d88888PP"""" ""YY88888888888888888888b,
+                 ,d88"'__,,--------,,,,.;ZZZY8888888888888,
+                ,8IIl'"                ;;l"ZZZIII8888888888,
+               ,I88l;'                  ;lZZZZZ888III8888888,
+             ,II88Zl;.                  ;llZZZZZ888888I888888,
+            ,II888Zl;.                .;;;;;lllZZZ888888I8888b
+           ,II8888Z;;                 `;;;;;''llZZ8888888I8888,
+           II88888Z;'                        .;lZZZ8888888I888b
+           II88888Z; _,aaa,      .,aaaaa,__.l;llZZZ88888888I888
+           II88888IZZZZZZZZZ,  .ZZZZZZZZZZZZZZ;llZZ88888888I888,
+           II88888IZZ<'(@@>Z|  |ZZZ<'(@@>ZZZZ;;llZZ888888888I88I
+          ,II88888;   `""" ;|  |ZZ; `"""     ;;llZ8888888888I888
+          II888888l            `;;          .;llZZ8888888888I888,
+         ,II888888Z;           ;;;        .;;llZZZ8888888888I888I
+         III888888Zl;    ..,   `;;       ,;;lllZZZ88888888888I888
+         II88888888Z;;...;(_    _)      ,;;;llZZZZ88888888888I888,
+         II88888888Zl;;;;;' `--'Z;.   .,;;;;llZZZZ88888888888I888b
+         ]I888888888Z;;;;'   ";llllll;..;;;lllZZZZ88888888888I8888,
+         II888888888Zl.;;"Y88bd888P";;,..;lllZZZZZ88888888888I8888I
+         II8888888888Zl;.; `"PPP";;;,..;lllZZZZZZZ88888888888I88888
+         II888888888888Zl;;. `;;;l;;;;lllZZZZZZZZW88888888888I88888
+         `II8888888888888Zl;.    ,;;lllZZZZZZZZWMZ88888888888I88888
+          II8888888888888888ZbaalllZZZZZZZZZWWMZZZ8888888888I888888,
+          `II88888888888888888b"WWZZZZZWWWMMZZZZZZI888888888I888888b
+           `II88888888888888888;ZZMMMMMMZZZZZZZZllI888888888I8888888
+            `II8888888888888888 `;lZZZZZZZZZZZlllll888888888I8888888,
+             II8888888888888888, `;lllZZZZllllll;;.Y88888888I8888888b,
+            ,II8888888888888888b   .;;lllllll;;;.;..88888888I88888888b,
+            II888888888888888PZI;.  .`;;;.;;;..; ...88888888I8888888888,
+            II888888888888PZ;;';;.   ;. .;.  .;. .. Y8888888I88888888888b,
+           ,II888888888PZ;;'                        `8888888I8888888888888b,
+           II888888888'                              888888I8888888888888888b
+          ,II888888888                              ,888888I88888888888888888
+         ,d88888888888                              d888888I8888888888ZZZZZZZ
+      ,ad888888888888I                              8888888I8888ZZZZZZZZZZZZZ
+    ,d888888888888888'                              888888IZZZZZZZZZZZZZZZZZZ
+  ,d888888888888P'8P'                               Y888ZZZZZZZZZZZZZZZZZZZZZ
+ ,8888888888888,  "                                 ,ZZZZZZZZZZZZZZZZZZZZZZZZ
+d888888888888888,                                ,ZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+888888888888888888a,      _                    ,ZZZZZZZZZZZZZZZZZZZZ888888888
+888888888888888888888ba,_d'                  ,ZZZZZZZZZZZZZZZZZ88888888888888
+8888888888888888888888888888bbbaaa,,,______,ZZZZZZZZZZZZZZZ888888888888888888
+88888888888888888888888888888888888888888ZZZZZZZZZZZZZZZ888888888888888888888
+8888888888888888888888888888888888888888ZZZZZZZZZZZZZZ88888888888888888888888
+888888888888888888888888888888888888888ZZZZZZZZZZZZZZ888888888888888888888888
+8888888888888888888888888888888888888ZZZZZZZZZZZZZZ88888888888888888888888888
+88888888888888888888888888888888888ZZZZZZZZZZZZZZ8888888888888888888888888888
+8888888888888888888888888888888888ZZZZZZZZZZZZZZ88888888888888888  BACON!  88
+88888888888888888888888888888888ZZZZZZZZZZZZZZ8888888888888888888   7080   88
+8888888888888888888888888888888ZZZZZZZZZZZZZZ88888888888888888888888888888888
+
+
+made it
+ */
