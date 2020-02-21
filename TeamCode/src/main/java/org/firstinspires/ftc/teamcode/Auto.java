@@ -729,12 +729,27 @@ public class Auto extends LinearOpMode {
 
     void positionRobot() {
         driveForwardSlow();
+
+        double lastTime = runtime.milliseconds();
+        //while(runtime.milliseconds() < lastTime + 1000){
+        //        }
+
         //TODO: Get a more accurate distance
         while ((robot.frontDistance.getDistance(DistanceUnit.MM) > FRONTDIST) && opModeIsActive()) {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
             Log.i("BACON", Double.toString(robot.frontDistance.getDistance(DistanceUnit.MM)) );
         }
+
+        /*
+        if (runtime.milliseconds() > lastTime + 5000){
+            driveBackwardsSlow();
+            sleep(2000);
+        }
+        */
+
+
+
     }
 
     void grabPrep() {
