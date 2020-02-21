@@ -274,11 +274,11 @@ public class BACONbotMechanum extends LinearOpMode {
             double GrabPos = 1;
             double FreePos = 0;
 
-            if (gamepad2.dpad_down) {
+            if (gamepad2.dpad_up) {
                 robot.matServoL.setPosition(freePos);
                 robot.matServoR.setPosition(grabPos);
             }
-            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_down) {
                 robot.matServoL.setPosition(grabPos);
                 robot.matServoR.setPosition(freePos);
             }

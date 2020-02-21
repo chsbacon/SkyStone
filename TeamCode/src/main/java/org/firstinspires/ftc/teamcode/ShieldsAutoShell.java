@@ -6,11 +6,12 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 // Got to name it and specify Autonomous or TeleOp
 // @Disabled will make this not show up on the phone
 @Autonomous(name = "Greetings, Human.", group = "Opmode")
-// @Disabled
+@Disabled
 
 // In FTC, we write classes that extend OpMode classes that the FTC people wrote
 public class ShieldsAutoShell extends LinearOpMode {

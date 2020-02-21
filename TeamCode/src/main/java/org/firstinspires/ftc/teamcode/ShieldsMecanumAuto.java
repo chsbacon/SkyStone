@@ -26,7 +26,7 @@ import java.util.Locale;
 
 
 @Autonomous(name = "Shields Mecanum Auto", group = "Opmode")
-//@Disabled
+@Disabled
 
 public class ShieldsMecanumAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();

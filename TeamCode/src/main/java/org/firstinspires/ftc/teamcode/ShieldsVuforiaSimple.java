@@ -21,8 +21,10 @@ import java.io.IOException;
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 @Autonomous(name = "Yellow Vuforia", group = "Opmode")
-// @Disabled
+@Disabled
 
 public class ShieldsVuforiaSimple extends LinearOpMode {
     HardwareBlank robot = new HardwareBlank();

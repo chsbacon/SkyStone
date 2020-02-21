@@ -76,7 +76,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
  */
 
 @Autonomous(name="Image", group="Opmode")
-//@Disabled
+@Disabled
 public class CaptureBitmap extends LinearOpMode {
 
     // Declare OpMode members.

@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 @Autonomous(name = "VuforiaTest", group = "Opmode")
+@Disabled
 public class StonesAlternateVuforiaTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     HardwareBACONbot robot = new HardwareBACONbot();

@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -41,6 +42,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // The OpMode utilizes the BACONbot hardware definition defined in HardwareBACONbot
 
 @TeleOp(name = "Shields: Holonomic", group = "Shields")
+@Disabled
 
 public class ShieldsHolonomic extends LinearOpMode {
 

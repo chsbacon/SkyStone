@@ -27,7 +27,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 @TeleOp(name="Cool Code", group ="Concept")
-// @Disabled
+@Disabled
 public class SophomoreVuforiaCode extends LinearOpMode {
     HardwareShieldsMecanum robot = new HardwareShieldsMecanum();
     private ElapsedTime runtime = new ElapsedTime();
