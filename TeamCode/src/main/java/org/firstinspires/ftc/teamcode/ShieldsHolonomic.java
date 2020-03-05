@@ -31,18 +31,21 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // This OpMode is just Shields messing around with holonomic drive and functions
 // The OpMode utilizes the BACONbot hardware definition defined in HardwareBACONbot
 
 @TeleOp(name = "Shields: Holonomic", group = "Shields")
-@Disabled
+//@Disabled
 
 public class ShieldsHolonomic extends LinearOpMode {
 
@@ -113,6 +116,50 @@ public class ShieldsHolonomic extends LinearOpMode {
             robot.backRightMotor.setPower(backRight);
 
             telemetry.update();
+
+            /*if(gamepad1.a){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+
+            if(gamepad1.b){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+
+            if(gamepad1.x){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+
+            if(gamepad1.y){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+            if(gamepad1.y && gamepad1.b){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+            if(gamepad1.y && gamepad1.x){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+            if(gamepad1.x && gamepad1.b){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+            if(gamepad1.y && gamepad1.b && gamepad1.a && gamepad1.x){
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_PARTY_PALETTE;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }*/
+
+
+
+
+
+
+
+
             /*
             if (gamepad1.b)
                 botState = 0;

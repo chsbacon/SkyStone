@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,6 +34,8 @@ public class Hardware_Shields_Holonomic
     public DcMotor  backLeftMotor    = null;
     public DcMotor  backRightMotor   = null;
 
+    //public RevBlinkinLedDriver blinkinLedDriver;
+    //public RevBlinkinLedDriver.BlinkinPattern pattern;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -84,6 +87,8 @@ public class Hardware_Shields_Holonomic
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //blinkinLedDriver = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
 
     }
 
