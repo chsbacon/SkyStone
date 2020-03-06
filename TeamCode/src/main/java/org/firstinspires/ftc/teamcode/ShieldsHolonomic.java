@@ -115,9 +115,6 @@ public class ShieldsHolonomic extends LinearOpMode {
 
             telemetry.update();
 
-            while (!gamepad1.x && !gamepad1.b && !gamepad1.y && !gamepad1.a) {
-            }
-
             if(gamepad1.x){
                 robot.pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
                 robot.blinkinLedDriver.setPattern(robot.pattern);
@@ -204,12 +201,11 @@ public class ShieldsHolonomic extends LinearOpMode {
             }
             */
             // Show wheel power to driver
-            // telemetry.addData("front left", "%.2f", frontLeft);
-            // telemetry.addData("front right", "%.2f", frontRight);
-            // telemetry.addData("back left", "%.2f", backLeft);
-            // telemetry.addData("back right", "%.2f", backRight);
-            // telemetry.addData("back right", "%.2f", backRight);
-            // telemetry.update();
+             telemetry.addData("front left", "%.2f", frontLeft);
+             telemetry.addData("front right", "%.2f", frontRight);
+             telemetry.addData("back left", "%.2f", backLeft);
+             telemetry.addData("back right", "%.2f", backRight);
+             telemetry.update();
 
             idle();
         }
