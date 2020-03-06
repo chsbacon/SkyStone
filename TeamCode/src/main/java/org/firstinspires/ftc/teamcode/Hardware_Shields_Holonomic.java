@@ -88,6 +88,7 @@ public class Hardware_Shields_Holonomic
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        blinkinLedDriver = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
     }
 
 

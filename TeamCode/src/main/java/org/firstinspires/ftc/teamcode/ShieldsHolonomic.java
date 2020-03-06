@@ -114,9 +114,15 @@ public class ShieldsHolonomic extends LinearOpMode {
             robot.backRightMotor.setPower(backRight);
 
             telemetry.update();
+
+            while (!gamepad1.x && !gamepad1.b && !gamepad1.y && !gamepad1.a) {
+            }
+
             if(gamepad1.x){
                 robot.pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
                 robot.blinkinLedDriver.setPattern(robot.pattern);
+                telemetry.addData("Blue", " ");
+                telemetry.update();
             }
             if(gamepad1.y){
                 robot.pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
